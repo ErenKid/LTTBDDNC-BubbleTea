@@ -16,18 +16,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final List<_OnboardingPageData> _pages = [
     _OnboardingPageData(
       imageUrl: 'https://cdn.dribbble.com/users/2131993/screenshots/15687436/media/2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e.png',
-      title: 'Welcome to ShareEat!',
-      description: "Let's start reducing food waste and saving money on meals together.",
+      title: 'Chào mừng đến với Bubble!',
+      description: "Hãy bắt đầu giảm chất thải thực phẩm và tiết kiệm tiền trong các bữa ăn cùng nhau.",
     ),
     _OnboardingPageData(
       imageUrl: 'https://cdn.dribbble.com/users/2131993/screenshots/15687436/media/1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e.png',
-      title: 'How it works?',
-      description: 'ShareEat connects you with local businesses who have surplus food inventory to sell at discounted prices.',
+      title: 'Ứng dụng hoạt động như thế nào?',
+      description: 'Chia sẻ kết nối bạn với các doanh nghiệp địa phương có hàng tồn kho thực phẩm dư thừa để bán với giá chiết khấu.',
     ),
     _OnboardingPageData(
       imageUrl: 'https://cdn-icons-png.flaticon.com/512/3075/3075977.png',
-      title: 'Track your impact',
-      description: "See how much food waste you've helped reduce and money you've saved on meals. Share your impact with friends!",
+      title: 'Theo dõi tác động của bạn',
+      description: "Xem bao nhiêu chất thải thực phẩm bạn đã giúp giảm và tiền bạn đã tiết kiệm được trong các bữa ăn. Chia sẻ tác động của bạn với bạn bè!",
     ),
   ];
 
@@ -117,7 +117,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 padding: const EdgeInsets.symmetric(vertical: 14),
                                 textStyle: const TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.bold, fontSize: 16),
                               ),
-                              child: const Text("Let's ShareEat"),
+                              child: const Text("Vào ứng dụng"),
                             ),
                           ),
                         ),

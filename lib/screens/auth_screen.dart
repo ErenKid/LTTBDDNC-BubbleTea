@@ -92,8 +92,8 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
                       fontSize: 18,
                     ),
                     tabs: const [
-                      Tab(text: 'Sign In'),
-                      Tab(text: 'Sign Up'),
+                      Tab(text: 'Đăng nhập'),
+                      Tab(text: 'Đăng ký'),
                     ],
                   ),
                 ),
@@ -130,15 +130,15 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
           const SizedBox(height: 8),
           _buildInputField(
             controller: _emailController,
-            label: 'Email Address',
-            hint: 'Enter your email...',
+            label: 'Địa chỉ Email',
+            hint: 'Nhập Email của bạn...',
             icon: Icons.email_outlined,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter your email';
+                return 'Vui lòng nhập Email của bạn';
               }
               if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}\$').hasMatch(value)) {
-                return 'Please enter a valid email';
+                return 'Vui lòng nhập Email chính xác';
               }
               return null;
             },
@@ -146,8 +146,8 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
           const SizedBox(height: 16),
           _buildInputField(
             controller: _passwordController,
-            label: 'Password',
-            hint: 'Enter your password...',
+            label: 'Mật khẩu',
+            hint: 'Nhập mật khẩu của bạn...',
             icon: Icons.lock_outline,
             obscureText: _obscurePassword,
             suffixIcon: IconButton(
@@ -160,10 +160,10 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter your password';
+                return 'Vui lòng nhập mật khẩu của bạn';
               }
               if (value.length < 6) {
-                return 'Password must be at least 6 characters';
+                return 'Mật khẩu của bạn chỉ được quá 5 ký tự';
               }
               return null;
             },
@@ -195,14 +195,14 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
                         valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryOrange),
                       ),
                     )
-                  : const Text('Sign In'),
+                  : const Text('Đăng nhập'),
             ),
           ),
           const SizedBox(height: 16),
           TextButton(
             onPressed: _showForgotPasswordDialog,
             child: const Text(
-              'Forgot Password?',
+              'Quên mật khẩu?',
               style: TextStyle(
                 color: Colors.white,
                 fontFamily: 'Montserrat',
@@ -223,12 +223,12 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
         children: [
           _buildInputField(
             controller: _nameController,
-            label: 'Full Name',
-            hint: 'Enter your name...',
+            label: 'Họ và Tên',
+            hint: 'Nhập họ tên của bạn...',
             icon: Icons.person_outline,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter your name';
+                return 'Vui lòng nhập họ tên của bạn';
               }
               return null;
             },
@@ -236,15 +236,15 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
           const SizedBox(height: 16),
           _buildInputField(
             controller: _emailController,
-            label: 'Email Address',
-            hint: 'Enter your email...',
+            label: 'Địa chỉ Email',
+            hint: 'Nhập Email của bạn...',
             icon: Icons.email_outlined,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter your email';
+                return 'Vui lòng nhập Email của bạn...';
               }
               if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}\$').hasMatch(value)) {
-                return 'Please enter a valid email';
+                return 'Vui lòng nhập Email chính xác';
               }
               return null;
             },
@@ -252,8 +252,8 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
           const SizedBox(height: 16),
           _buildInputField(
             controller: _passwordController,
-            label: 'Password',
-            hint: 'Enter your password...',
+            label: 'Mật khẩu',
+            hint: 'Nhập mật khẩu của bạn...',
             icon: Icons.lock_outline,
             obscureText: _obscurePassword,
             suffixIcon: IconButton(
@@ -266,10 +266,10 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter your password';
+                return 'Vui lòng nhập mật khẩu của bạn';
               }
               if (value.length < 6) {
-                return 'Password must be at least 6 characters';
+                return 'Mật khẩu của bạn không được quá 5 ký tự';
               }
               return null;
             },
@@ -301,7 +301,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
                         valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryOrange),
                       ),
                     )
-                  : const Text('Sign Up'),
+                  : const Text('Đăng ký'),
             ),
           ),
         ],
@@ -379,7 +379,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Sign up failed: \\n${e.toString()}'),
+            content: Text('Đăng ký thất bại: \\n${e.toString()}'),
             backgroundColor: AppTheme.errorRed,
           ),
         );
@@ -399,11 +399,11 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text('Reset Password', style: TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.bold)),
+        title: const Text('Đặt lại mật khẩu', style: TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.bold)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Enter your email to receive a password reset link.', style: TextStyle(fontFamily: 'Montserrat')),
+            const Text('Nhập email của bạn để nhận liên kết đặt lại mật khẩu.', style: TextStyle(fontFamily: 'Montserrat')),
             const SizedBox(height: 16),
             TextField(
               controller: emailController,
@@ -418,7 +418,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel', style: TextStyle(fontFamily: 'Montserrat')),
+            child: const Text('Thoát', style: TextStyle(fontFamily: 'Montserrat')),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -434,7 +434,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Password reset email sent!'),
+                      content: Text('Mật khẩu đặt lại email đã gửi!'),
                       backgroundColor: AppTheme.primaryOrange,
                     ),
                   );
@@ -443,7 +443,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Failed to send reset email: \\n${e.toString()}'),
+                      content: Text('Không thể gửi Email đặt lại mật khẩu: \\n${e.toString()}'),
                       backgroundColor: AppTheme.errorRed,
                     ),
                   );

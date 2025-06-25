@@ -65,14 +65,14 @@ class AppTheme {
         hintStyle: const TextStyle(color: textLight),
         labelStyle: const TextStyle(color: textLight),
       ),
-      cardTheme: CardTheme(
-        color: white,
-        elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      ),
+      // cardTheme: CardTheme(
+      //   color: white,
+      //   elevation: 4,
+      //   shape: RoundedRectangleBorder(
+      //     borderRadius: BorderRadius.circular(16),
+      //   ),
+      //   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      // ),
       textTheme: GoogleFonts.montserratTextTheme().copyWith(
         headlineLarge: const TextStyle(
           fontSize: 32,

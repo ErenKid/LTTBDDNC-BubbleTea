@@ -23,7 +23,7 @@ class ProfileScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Hi, ${user?.name ?? 'User'}',
+                      'Xin chào, ${user?.name ?? 'User'}',
                       style: const TextStyle(
                         fontFamily: 'Montserrat',
                         fontWeight: FontWeight.bold,
@@ -57,11 +57,11 @@ class ProfileScreen extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
             children: [
-              _buildMenuItem('Profile Settings', onTap: () {}),
-              _buildMenuItem('Edit Profile', onTap: () {}),
-              _buildMenuItem('Food Booking History', onTap: () {}),
-              _buildMenuItem('Switch to Business Profile', onTap: () {}),
-              _buildMenuItem('About App', onTap: () {}),
+              _buildMenuItem('Cài đặt thông tin cá nhân', onTap: () {}),
+              _buildMenuItem('Chỉnh sửa thông tin cá nhân', onTap: () {}),
+              _buildMenuItem('Lịch sử đặt hàng', onTap: () {}),
+              _buildMenuItem('Chuyển sang hồ sơ kinh doanh', onTap: () {}),
+              _buildMenuItem('Về ứng dụng', onTap: () {}),
               const SizedBox(height: 32),
               Center(
                 child: SizedBox(
@@ -85,7 +85,7 @@ class ProfileScreen extends StatelessWidget {
                     onPressed: () async {
                       await context.read<MockAuthService>().signOut();
                     },
-                    child: const Text('Log Out'),
+                    child: const Text('Đăng Xuất'),
                   ),
                 ),
               ),

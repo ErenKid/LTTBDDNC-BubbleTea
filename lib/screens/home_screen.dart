@@ -66,7 +66,7 @@ class HomeTabContent extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'Browse Categories',
+                'Các loại nước uống',
                 style: TextStyle(
                   fontFamily: 'Montserrat',
                   fontWeight: FontWeight.bold,
@@ -99,7 +99,7 @@ class HomeTabContent extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'Special Offers',
+                'Nước uống đặc biệt',
                 style: TextStyle(
                   fontFamily: 'Montserrat',
                   fontWeight: FontWeight.bold,
@@ -136,7 +136,7 @@ class HomeTabContent extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: const [
                           Text(
-                            'SUPER\nSALE',
+                            'Siêu\nGiảm giá',
                             style: TextStyle(
                               fontFamily: 'Montserrat',
                               fontWeight: FontWeight.bold,
@@ -147,7 +147,7 @@ class HomeTabContent extends StatelessWidget {
                           ),
                           SizedBox(height: 6),
                           Text(
-                            '15% OFF',
+                            '15% trị giá',
                             style: TextStyle(
                               fontFamily: 'Montserrat',
                               fontWeight: FontWeight.bold,
@@ -167,7 +167,7 @@ class HomeTabContent extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'Businesses Near You',
+                'Các doanh nghiệp gần bạn',
                 style: TextStyle(
                   fontFamily: 'Montserrat',
                   fontWeight: FontWeight.bold,
@@ -196,7 +196,7 @@ class HomeTabContent extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('[name]',
+                    const Text('[Tên doanh nghiệp]',
                         style: TextStyle(
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.bold,
@@ -204,7 +204,7 @@ class HomeTabContent extends StatelessWidget {
                           color: AppTheme.textDark,
                         )),
                     const SizedBox(height: 4),
-                    const Text('[desc]',
+                    const Text('[Mô tả doanh nghiệp]',
                         style: TextStyle(
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.w400,
@@ -216,7 +216,7 @@ class HomeTabContent extends StatelessWidget {
                       children: const [
                         Icon(Icons.star, color: AppTheme.primaryOrange, size: 18),
                         SizedBox(width: 4),
-                        Text('[rating]',
+                        Text('[Đánh giá]',
                             style: TextStyle(
                               fontFamily: 'Montserrat',
                               fontWeight: FontWeight.w500,
@@ -224,7 +224,7 @@ class HomeTabContent extends StatelessWidget {
                               color: AppTheme.textDark,
                             )),
                         SizedBox(width: 4),
-                        Text('Rating',
+                        Text('Đánh giá',
                             style: TextStyle(
                               fontFamily: 'Montserrat',
                               fontWeight: FontWeight.w400,
@@ -234,7 +234,7 @@ class HomeTabContent extends StatelessWidget {
                         SizedBox(width: 16),
                         Icon(Icons.location_on, color: AppTheme.primaryOrange, size: 18),
                         SizedBox(width: 4),
-                        Text('[distance] Km',
+                        Text('[Khoảng cách] Km',
                             style: TextStyle(
                               fontFamily: 'Montserrat',
                               fontWeight: FontWeight.w500,

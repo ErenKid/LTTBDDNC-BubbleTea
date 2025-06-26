@@ -27,7 +27,7 @@ class ExploreScreen extends StatelessWidget {
                   Expanded(
                     child: TextField(
                       decoration: InputDecoration(
-                        hintText: 'ExploreEat',
+                        hintText: 'Khám phá nước uống',
                         border: InputBorder.none,
                         hintStyle: const TextStyle(
                           fontFamily: 'Montserrat',
@@ -44,7 +44,7 @@ class ExploreScreen extends StatelessWidget {
             const SizedBox(height: 18),
             // Explore by Map
             const Text(
-              'Explore by Map',
+              'Khám phá bản đồ',
               style: TextStyle(
                 fontFamily: 'Montserrat',
                 fontWeight: FontWeight.bold,
@@ -74,7 +74,7 @@ class ExploreScreen extends StatelessWidget {
             const SizedBox(height: 18),
             // Food Donation Communities
             const Text(
-              'Food Donation Communities',
+              'Cộng đồng quyên góp nước uống',
               style: TextStyle(
                 fontFamily: 'Montserrat',
                 fontWeight: FontWeight.bold,
@@ -90,17 +90,17 @@ class ExploreScreen extends StatelessWidget {
                 children: [
                   _buildCommunityCard(
                     context,
-                    'Little Angels',
+                    'Thiên thần bé nhỏ',
                     'assets/images/community1.jpg',
                   ),
                   _buildCommunityCard(
                     context,
-                    'Street Survivors',
+                    'Người lang thang trên phố',
                     'assets/images/community2.jpg',
                   ),
                   _buildCommunityCard(
                     context,
-                    'Food For All',
+                    'Nước uống cho tất cả',
                     'assets/images/community3.jpg',
                   ),
                 ],

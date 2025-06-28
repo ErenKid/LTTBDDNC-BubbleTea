@@ -14,22 +14,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int _currentPage = 0;
 
   final List<_OnboardingPageData> _pages = [
-    _OnboardingPageData(
-      imageUrl: 'https://cdn.dribbble.com/users/2131993/screenshots/15687436/media/2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e.png',
-      title: 'Chào mừng đến với Bubble!',
-      description: "Hãy bắt đầu giảm chất thải thực phẩm và tiết kiệm tiền trong các bữa ăn cùng nhau.",
-    ),
-    _OnboardingPageData(
-      imageUrl: 'https://cdn.dribbble.com/users/2131993/screenshots/15687436/media/1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e.png',
-      title: 'Ứng dụng hoạt động như thế nào?',
-      description: 'Chia sẻ kết nối bạn với các doanh nghiệp địa phương có hàng tồn kho thực phẩm dư thừa để bán với giá chiết khấu.',
-    ),
-    _OnboardingPageData(
-      imageUrl: 'https://cdn-icons-png.flaticon.com/512/3075/3075977.png',
-      title: 'Theo dõi tác động của bạn',
-      description: "Xem bao nhiêu chất thải thực phẩm bạn đã giúp giảm và tiền bạn đã tiết kiệm được trong các bữa ăn. Chia sẻ tác động của bạn với bạn bè!",
-    ),
-  ];
+  _OnboardingPageData(
+    imageUrl: 'assets/images/onboarding1.png',
+    title: 'Chào mừng đến với Bubble!',
+    description: "Hãy bắt đầu giảm chất thải thực phẩm và tiết kiệm tiền trong các bữa ăn cùng nhau.",
+  ),
+  _OnboardingPageData(
+    imageUrl: 'assets/images/onboarding2.png',
+    title: 'Ứng dụng hoạt động như thế nào?',
+    description: 'Chia sẻ kết nối bạn với các doanh nghiệp địa phương có hàng tồn kho thực phẩm dư thừa để bán với giá chiết khấu.',
+  ),
+  _OnboardingPageData(
+    imageUrl: 'assets/images/onboarding3.png',
+    title: 'Chúc bạn uống ngon miệng',
+    description: "",
+  ),
+  
+];
+
 
   void _nextPage() {
     if (_currentPage < _pages.length - 1) {
@@ -69,11 +71,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     children: [
                       const SizedBox(height: 48),
                       SizedBox(
-                        height: 220,
+                        height: 600,
                         child: Image.network(
-                          page.imageUrl,
-                          fit: BoxFit.contain,
-                        ),
+                              page.imageUrl,
+                              fit: BoxFit.contain,
+                            ),
                       ),
                       const SizedBox(height: 32),
                       Padding(

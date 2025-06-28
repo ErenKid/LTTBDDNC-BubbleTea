@@ -48,30 +48,11 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
               children: [
                 // Logo + App Name
                 const SizedBox(height: 32),
-                Container(
-                  width: 64,
-                  height: 64,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Icon(
-                    Icons.emoji_food_beverage, // carrot placeholder
-                    color: AppTheme.primaryOrange,
-                    size: 40,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'ShareEat',
-                  style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 32,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 32),
+                Image.asset(
+                  'assets/images/onboarding3.png',
+                  width: 300,
+                  height: 300,
+                ),                
                 // Tab Bar
                 Container(
                   width: 340,

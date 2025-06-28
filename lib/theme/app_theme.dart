@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // FlutterFlow-like orange color palette
-  static const Color primaryOrange = Color(0xFFFF8000);
+  static const Color primaryOrange = Color(0xFFA1D683);
   static const Color lightOrange = Color(0xFFFFA040);
   static const Color darkOrange = Color(0xFFCC6600);
   static const Color background = primaryOrange;

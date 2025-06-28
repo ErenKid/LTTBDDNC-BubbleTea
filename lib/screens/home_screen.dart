@@ -6,6 +6,27 @@ import 'cart_screen.dart';
 
 class HomeTabContent extends StatelessWidget {
   const HomeTabContent({super.key});
+    Widget _buildFilterChip(String label, {bool selected = false}) {
+  return Padding(
+    padding: const EdgeInsets.only(right: 8),
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: selected ? AppTheme.primaryOrange : Colors.grey[200],
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontFamily: 'Montserrat',
+          color: selected ? Colors.white : Colors.black87,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    ),
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -15,52 +36,80 @@ class HomeTabContent extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Location Bar
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppTheme.primaryOrange.withOpacity(0.3)),
-                ),
+            // Top Greeting + Avatar
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: AppTheme.primaryOrange.withOpacity(0.8),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: const Text(
-                        'location',
+                    const Expanded(
+                      child: Text(
+                        'Đặt đồ uống bạn yêu thích!',
                         style: TextStyle(
-                          color: Colors.white,
                           fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: AppTheme.textDark,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    const Icon(Icons.location_on, color: AppTheme.primaryOrange, size: 20),
-                    const SizedBox(width: 4),
-                    const Expanded(
-                      child: Text(
-                        'Baner, Pune - 411045',
-                        style: TextStyle(
-                          color: AppTheme.textDark,
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                    const CircleAvatar(
+                      radius: 20,
+                      backgroundImage: AssetImage('assets/images/pfp.png'), // Replace with your own avatar
                     ),
                   ],
                 ),
               ),
-            ),
+              const SizedBox(height: 16),
+
+              // Search Bar
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      )
+                    ],
+                  ),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      icon: const Icon(Icons.search, color: Colors.grey),
+                      hintText: 'Bạn muốn uống gì',
+                      hintStyle: const TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Filter Buttons (All, Combos, etc.)
+              SizedBox(
+                height: 40,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  children: [
+                    _buildFilterChip('All', selected: true),
+                    _buildFilterChip('Combos'),
+                    _buildFilterChip('Sliders'),
+                    _buildFilterChip('Classic'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+
             const SizedBox(height: 12),
             // Browse Categories
             const Padding(
@@ -77,23 +126,23 @@ class HomeTabContent extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             SizedBox(
-              height: 100,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  const SizedBox(width: 12),
-                  _buildCategoryFF('Breakfast', 'https://cdn.pixabay.com/photo/2022/05/07/16/38/poha-7180676__340.jpg'),
-                  _buildCategoryFF('Lunch', 'https://cdn.pixabay.com/photo/2012/07/09/07/16/thali-51996__340.jpg'),
-                  _buildCategoryFF('Snacks', 'https://cdn.pixabay.com/photo/2018/08/29/19/01/fig-3640553_960_720.jpg'),
-                  _buildCategoryFF('Dinner', 'https://cdn.pixabay.com/photo/2017/09/09/12/09/india-2731817__340.jpg'),
-                  _buildCategoryFF('Beverages', 'https://cdn.pixabay.com/photo/2017/08/03/21/48/drinks-2578446__340.jpg'),
-                  _buildCategoryFF('Grocery', 'https://storage.needpix.com/rsynced_images/grocery-2932906_1280.jpg'),
-                  _buildCategoryFF('Fruits', 'https://cdn.pixabay.com/photo/2017/09/26/13/42/apple-2788662__340.jpg'),
-                  _buildCategoryFF('Vegetables', 'https://cdn.pixabay.com/photo/2015/05/04/10/16/vegetables-752153_960_720.jpg'),
-                  const SizedBox(width: 12),
-                ],
+                height: 100,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    const SizedBox(width: 12),
+                    _buildCategoryFF('Trà', 'assets/images/tea.png'),
+                    _buildCategoryFF('Nước Trái Cây', 'assets/images/juice.png'),
+                    _buildCategoryFF('Sữa', 'assets/images/milk.png'),
+                    _buildCategoryFF('Nước Có Ga', 'assets/images/soda.png'),
+                    _buildCategoryFF('Mocktail', 'assets/images/mocktail.png'),
+                    _buildCategoryFF('Trà Sữa', 'assets/images/bubble_tea.png'),
+                    _buildCategoryFF('Cà Phê', 'assets/images/coffee.png'),
+                    _buildCategoryFF('Nước Lọc', 'assets/images/water.png'),
+                    const SizedBox(width: 12),
+                  ],
+                ),
               ),
-            ),
             const SizedBox(height: 18),
             // Special Offers
             const Padding(
@@ -109,30 +158,25 @@ class HomeTabContent extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            Padding(
+              Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Container(
-                width: double.infinity,
-                height: 90,
-                decoration: BoxDecoration(
-                  color: Colors.orange[100],
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Row(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(14),
+                child: Stack(
                   children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Image.network(
-                          'https://cdn-icons-png.flaticon.com/512/3075/3075977.png',
-                          fit: BoxFit.contain,
-                        ),
-                      ),
+                    // Background image
+                    Image.network(
+                      'assets/images/banner.png',
+                      width: double.infinity,
+                      height: 120,
+                      fit: BoxFit.cover,
+                      filterQuality: FilterQuality.high,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 18),
+                    // Overlay text
+                    Positioned(
+                      right: 18,
+                      top: 20,
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: const [
                           Text(
@@ -141,7 +185,8 @@ class HomeTabContent extends StatelessWidget {
                               fontFamily: 'Montserrat',
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
-                              color: AppTheme.primaryOrange,
+                              color: Colors.white,
+                              shadows: [Shadow(blurRadius: 4, color: Colors.black45, offset: Offset(1, 1))],
                             ),
                             textAlign: TextAlign.right,
                           ),
@@ -152,7 +197,8 @@ class HomeTabContent extends StatelessWidget {
                               fontFamily: 'Montserrat',
                               fontWeight: FontWeight.bold,
                               fontSize: 22,
-                              color: AppTheme.textDark,
+                              color: Colors.white,
+                              shadows: [Shadow(blurRadius: 4, color: Colors.black45, offset: Offset(1, 1))],
                             ),
                           ),
                         ],
@@ -163,132 +209,131 @@ class HomeTabContent extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 18),
-            // Businesses Near You
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'Các doanh nghiệp gần bạn',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: AppTheme.textDark,
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(14),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                padding: const EdgeInsets.all(18),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('[Tên doanh nghiệp]',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: AppTheme.textDark,
-                        )),
-                    const SizedBox(height: 4),
-                    const Text('[Mô tả doanh nghiệp]',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.w400,
-                          fontSize: 13,
-                          color: AppTheme.textLight,
-                        )),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: const [
-                        Icon(Icons.star, color: AppTheme.primaryOrange, size: 18),
-                        SizedBox(width: 4),
-                        Text('[Đánh giá]',
-                            style: TextStyle(
-                              fontFamily: 'Montserrat',
-                              fontWeight: FontWeight.w500,
-                              fontSize: 13,
-                              color: AppTheme.textDark,
-                            )),
-                        SizedBox(width: 4),
-                        Text('Đánh giá',
-                            style: TextStyle(
-                              fontFamily: 'Montserrat',
-                              fontWeight: FontWeight.w400,
-                              fontSize: 13,
-                              color: AppTheme.textLight,
-                            )),
-                        SizedBox(width: 16),
-                        Icon(Icons.location_on, color: AppTheme.primaryOrange, size: 18),
-                        SizedBox(width: 4),
-                        Text('[Khoảng cách] Km',
-                            style: TextStyle(
-                              fontFamily: 'Montserrat',
-                              fontWeight: FontWeight.w500,
-                              fontSize: 13,
-                              color: AppTheme.textDark,
-                            )),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 0.7,
+              children: [
+                _buildProductCard('Matcha Latte', 4.9, 'assets/images/matcha.png'),
+                _buildProductCard('Sữa tươi trân châu đường đen', 4.8, 'assets/images/suatuoi.png'),
+                _buildProductCard('Nước ép Việt Quốc', 4.6, 'assets/images/vietquoc.png'),
+                _buildProductCard('Nước cộng đồng LGBT+', 4.5, 'assets/images/lgbt.png'),
+                _buildProductCard('Matcha Latte', 4.9, 'assets/images/matcha.png'),
+                _buildProductCard('Sữa tươi trân châu đường đen', 4.8, 'assets/images/suatuoi.png'),
+                _buildProductCard('Nước ép Việt Quốc', 4.6, 'assets/images/vietquoc.png'),
+                _buildProductCard('Nước cộng đồng LGBT+', 4.5, 'assets/images/lgbt.png'),
+                _buildProductCard('Matcha Latte', 4.9, 'assets/images/matcha.png'),
+                _buildProductCard('Sữa tươi trân châu đường đen', 4.8, 'assets/images/suatuoi.png'),
+                _buildProductCard('Nước ép Việt Quốc', 4.6, 'assets/images/vietquoc.png'),
+                _buildProductCard('Nước cộng đồng LGBT+', 4.5, 'assets/images/lgbt.png'),
+                _buildProductCard('Matcha Latte', 4.9, 'assets/images/matcha.png'),
+                _buildProductCard('Sữa tươi trân châu đường đen', 4.8, 'assets/images/suatuoi.png'),
+                _buildProductCard('Nước ép Việt Quốc', 4.6, 'assets/images/vietquoc.png'),
+                _buildProductCard('Nước cộng đồng LGBT+', 4.5, 'assets/images/lgbt.png'),
+              ],
             ),
-            const SizedBox(height: 18),
+          ),
+
           ],
         ),
       ),
     );
   }
 
-  Widget _buildCategoryFF(String name, String imageUrl) {
-    return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(6, 0, 0, 0),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              color: const Color(0xB0969696),
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: NetworkImage(imageUrl),
+      Widget _buildCategoryFF(String name, String imagePath) {
+      return Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(6, 0, 0, 0),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.network(
+              imagePath,
+              width: 50,
+              height: 50,
+              fit: BoxFit.cover,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              name,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.w500,
+                fontSize: 12,
+                color: AppTheme.textDark,
               ),
-              shape: BoxShape.circle,
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            name,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontFamily: 'Montserrat',
-              fontWeight: FontWeight.w500,
-              fontSize: 12,
-              color: AppTheme.textDark,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
+    }
 }
+Widget _buildProductCard(String name, double rating, String imagePath) {
+  return Container(
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.04),
+          blurRadius: 4,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    ),
+    padding: const EdgeInsets.all(12),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Center(
+            child: Image.asset(
+              imagePath,
+              fit: BoxFit.contain,
+              filterQuality: FilterQuality.high,
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          name,
+          style: const TextStyle(
+            fontFamily: 'Montserrat',
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+            color: AppTheme.textDark,
+          ),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        const SizedBox(height: 6),
+        Row(
+          children: [
+            const Icon(Icons.star, color: AppTheme.primaryOrange, size: 16),
+            const SizedBox(width: 4),
+            Text(
+              rating.toString(),
+              style: const TextStyle(
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.w500,
+                fontSize: 13,
+              ),
+            ),
+            const Spacer(),
+            const Icon(Icons.favorite_border, size: 18, color: AppTheme.textLight),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

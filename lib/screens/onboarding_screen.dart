@@ -71,8 +71,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     children: [
                       const SizedBox(height: 48),
                       SizedBox(
-                        height: 600,
-                        child: Image.network(
+                        height: MediaQuery.of(context).size.height * 0.38,
+                        child: Image.asset(
                               page.imageUrl,
                               fit: BoxFit.contain,
                             ),

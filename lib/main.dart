@@ -50,7 +50,7 @@ class _AppFlowControllerState extends State<AppFlowController> {
     if (!_onboardingDone) {
       return OnboardingScreen(onFinish: _finishOnboarding);
     }
-    return AuthWrapper();
+    return const AuthScreen();
   }
 }
 

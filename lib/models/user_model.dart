@@ -12,6 +12,7 @@ class UserModel {
   final int totalReceives;
   final DateTime createdAt;
   final bool isVerified;
+  final String password;
 
   UserModel({
     required this.id,
@@ -27,6 +28,7 @@ class UserModel {
     this.totalReceives = 0,
     required this.createdAt,
     this.isVerified = false,
+    required this.password,
   });
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
@@ -44,6 +46,7 @@ class UserModel {
       totalReceives: map['totalReceives']?.toInt() ?? 0,
       createdAt: (map['createdAt'] as Timestamp).toDate(),
       isVerified: map['isVerified'] ?? false,
+      password: map['password'] ?? '',
     );
   }
 
@@ -62,6 +65,7 @@ class UserModel {
       'totalReceives': totalReceives,
       'createdAt': createdAt,
       'isVerified': isVerified,
+      'password': password,
     };
   }
 
@@ -79,6 +83,7 @@ class UserModel {
     int? totalReceives,
     DateTime? createdAt,
     bool? isVerified,
+    String? password,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -94,6 +99,7 @@ class UserModel {
       totalReceives: totalReceives ?? this.totalReceives,
       createdAt: createdAt ?? this.createdAt,
       isVerified: isVerified ?? this.isVerified,
+      password: password ?? this.password,
     );
   }
 }

@@ -127,12 +127,19 @@ class FoodListScreen extends StatelessWidget {
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(12),
-          child: Image.network(
-            imageUrl,
-            width: 54,
-            height: 54,
-            fit: BoxFit.cover,
-          ),
+          child: imageUrl.startsWith('assets/images/')
+              ? Image.asset(
+                  imageUrl,
+                  width: 54,
+                  height: 54,
+                  fit: BoxFit.cover,
+                )
+              : Image.network(
+                  imageUrl,
+                  width: 54,
+                  height: 54,
+                  fit: BoxFit.cover,
+                ),
         ),
         title: Text(
           name,

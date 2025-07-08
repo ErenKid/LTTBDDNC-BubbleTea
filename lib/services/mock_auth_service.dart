@@ -42,6 +42,16 @@ class MockAuthService extends ChangeNotifier {
         email: email,
         name: name,
         createdAt: DateTime.now(),
+        password: password,
+        photoUrl: null,
+        phoneNumber: null,
+        address: null,
+        latitude: null,
+        longitude: null,
+        rating: 0,
+        totalShares: 0,
+        totalReceives: 0,
+        isVerified: false,
       );
 
       _currentUser = user;
@@ -72,9 +82,16 @@ class MockAuthService extends ChangeNotifier {
         email: email,
         name: email.split('@')[0],
         createdAt: DateTime.now().subtract(const Duration(days: 30)),
+        password: password,
+        photoUrl: null,
+        phoneNumber: null,
+        address: null,
+        latitude: null,
+        longitude: null,
+        rating: 4,
         totalShares: 5,
         totalReceives: 3,
-        rating: 4,
+        isVerified: false,
       );
 
       _currentUser = user;
@@ -113,6 +130,7 @@ class MockAuthService extends ChangeNotifier {
         address: address,
         latitude: latitude,
         longitude: longitude,
+        password: _currentUser!.password,
       );
 
       _currentUser = updatedUser;
@@ -127,7 +145,7 @@ class MockAuthService extends ChangeNotifier {
     if (_currentUser == null) return;
 
     try {
-      final updatedUser = _currentUser!.copyWith(photoUrl: photoUrl);
+      final updatedUser = _currentUser!.copyWith(photoUrl: photoUrl, password: _currentUser!.password);
       _currentUser = updatedUser;
       notifyListeners();
     } catch (e) {

@@ -1,0 +1,11 @@
+name: forgot_password_server
+version: 1.0.0
+description: Simple Dart server for password reset
+
+environment:
+  sdk: '>=2.17.0 <3.0.0'
+
+dependencies:
+  shelf: ^1.4.0
+  shelf_router: ^1.1.3
+  mailer: ^6.0.0 

@@ -165,9 +165,9 @@ class HomeTabContent extends StatelessWidget {
                 child: Stack(
                   children: [
                     // Background image
-                    Image.network(
+                    Image.asset(
                       'assets/images/banner.png',
-                      width: double.infinity,
+                      width: MediaQuery.of(context).size.width,
                       height: 120,
                       fit: BoxFit.cover,
                       filterQuality: FilterQuality.high,
@@ -219,22 +219,16 @@ class HomeTabContent extends StatelessWidget {
               mainAxisSpacing: 12,
               childAspectRatio: 0.7,
               children: [
-                _buildProductCard('Matcha Latte', 4.9, 'assets/images/matcha.png'),
-                _buildProductCard('Sữa tươi trân châu đường đen', 4.8, 'assets/images/suatuoi.png'),
-                _buildProductCard('Nước ép Việt Quốc', 4.6, 'assets/images/vietquoc.png'),
-                _buildProductCard('Nước cộng đồng LGBT+', 4.5, 'assets/images/lgbt.png'),
-                _buildProductCard('Matcha Latte', 4.9, 'assets/images/matcha.png'),
-                _buildProductCard('Sữa tươi trân châu đường đen', 4.8, 'assets/images/suatuoi.png'),
-                _buildProductCard('Nước ép Việt Quốc', 4.6, 'assets/images/vietquoc.png'),
-                _buildProductCard('Nước cộng đồng LGBT+', 4.5, 'assets/images/lgbt.png'),
-                _buildProductCard('Matcha Latte', 4.9, 'assets/images/matcha.png'),
-                _buildProductCard('Sữa tươi trân châu đường đen', 4.8, 'assets/images/suatuoi.png'),
-                _buildProductCard('Nước ép Việt Quốc', 4.6, 'assets/images/vietquoc.png'),
-                _buildProductCard('Nước cộng đồng LGBT+', 4.5, 'assets/images/lgbt.png'),
-                _buildProductCard('Matcha Latte', 4.9, 'assets/images/matcha.png'),
-                _buildProductCard('Sữa tươi trân châu đường đen', 4.8, 'assets/images/suatuoi.png'),
-                _buildProductCard('Nước ép Việt Quốc', 4.6, 'assets/images/vietquoc.png'),
-                _buildProductCard('Nước cộng đồng LGBT+', 4.5, 'assets/images/lgbt.png'),
+                _buildProductCard('Trà Đào Cam Sả', 4.9, 'https://katinat.vn/wp-content/uploads/2023/07/tra-dao-cam-sa.jpg', isNetwork: true),
+                _buildProductCard('Trà Oolong', 4.8, 'https://katinat.vn/wp-content/uploads/2023/07/oolong.jpg', isNetwork: true),
+                _buildProductCard('Trà Sữa Truyền Thống', 4.7, 'https://katinat.vn/wp-content/uploads/2023/07/tra-sua-truyen-thong.jpg', isNetwork: true),
+                _buildProductCard('Cà Phê Sữa Đá', 4.8, 'https://katinat.vn/wp-content/uploads/2023/07/ca-phe-sua-da.jpg', isNetwork: true),
+                _buildProductCard('Bạc Xỉu', 4.6, 'https://katinat.vn/wp-content/uploads/2023/07/bac-xiu.jpg', isNetwork: true),
+                _buildProductCard('Sữa Tươi Trân Châu Đường Đen', 4.9, 'https://katinat.vn/wp-content/uploads/2023/07/sua-tuoi-tran-chau.jpg', isNetwork: true),
+                _buildProductCard('Matcha Latte', 4.7, 'https://katinat.vn/wp-content/uploads/2023/07/matcha-latte.jpg', isNetwork: true),
+                _buildProductCard('Nước Ép Cam', 4.5, 'https://katinat.vn/wp-content/uploads/2023/07/nuoc-ep-cam.jpg', isNetwork: true),
+                _buildProductCard('Soda Việt Quất', 4.4, 'https://katinat.vn/wp-content/uploads/2023/07/soda-viet-quat.jpg', isNetwork: true),
+                _buildProductCard('Nước Lọc', 4.2, 'https://katinat.vn/wp-content/uploads/2023/07/nuoc-loc.jpg', isNetwork: true),
               ],
             ),
           ),
@@ -252,10 +246,10 @@ class HomeTabContent extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.network(
+            Image.asset(
               imagePath,
-              width: 50,
-              height: 50,
+              width: 48,
+              height: 48,
               fit: BoxFit.cover,
             ),
             const SizedBox(height: 4),
@@ -274,7 +268,7 @@ class HomeTabContent extends StatelessWidget {
       );
     }
 }
-Widget _buildProductCard(String name, double rating, String imagePath) {
+Widget _buildProductCard(String name, double rating, String imagePath, {bool isNetwork = false}) {
   return Container(
     decoration: BoxDecoration(
       color: Colors.white,
@@ -293,11 +287,17 @@ Widget _buildProductCard(String name, double rating, String imagePath) {
       children: [
         Expanded(
           child: Center(
-            child: Image.asset(
-              imagePath,
-              fit: BoxFit.contain,
-              filterQuality: FilterQuality.high,
-            ),
+            child: isNetwork
+                ? Image.network(
+                    imagePath,
+                    fit: BoxFit.contain,
+                    filterQuality: FilterQuality.high,
+                  )
+                : Image.asset(
+                    imagePath,
+                    fit: BoxFit.contain,
+                    filterQuality: FilterQuality.high,
+                  ),
           ),
         ),
         const SizedBox(height: 8),

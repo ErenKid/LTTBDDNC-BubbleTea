@@ -53,13 +53,26 @@ class HomeTabContent extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const CircleAvatar(
-                      radius: 20,
-                      backgroundImage: AssetImage('assets/images/pfp.png'), // Replace with your own avatar
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.notifications_none),
+                          color: AppTheme.textDark,
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/notifications');
+                          },
+                        ),
+                        const SizedBox(width: 4),
+                        const CircleAvatar(
+                          radius: 20,
+                          backgroundImage: AssetImage('assets/images/pfp.png'),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
+
               const SizedBox(height: 16),
 
               // Search Bar

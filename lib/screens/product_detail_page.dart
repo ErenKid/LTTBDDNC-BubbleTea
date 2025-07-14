@@ -1,7 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import '../models/cart_model.dart';
+import '../models/food_item_model.dart';
 
 class ProductDetailPage extends StatefulWidget {
-  const ProductDetailPage({super.key});
+  final String name;
+  final String imageUrl;
+  final double rating;
+  final int price;
+
+  const ProductDetailPage({
+    Key? key,
+    required this.name,
+    required this.imageUrl,
+    required this.rating,
+    required this.price,
+  }) : super(key: key);
 
   @override
   State<ProductDetailPage> createState() => _ProductDetailPageState();
@@ -9,15 +23,23 @@ class ProductDetailPage extends StatefulWidget {
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
   int quantity = 1;
-  String selectedSize = 'L';
+  String selectedSize = 'S';
   String selectedIce = 'direct';
 
-  final Map<String, int> sizePrices = {
-    'S': 49000,
-    'M': 54000,
-    'L': 59000,
-    'XL': 64000,
-  };
+  int getSizePrice() {
+    switch (selectedSize) {
+      case 'S':
+        return widget.price;
+      case 'M':
+        return widget.price + 5000;
+      case 'L':
+        return widget.price + 10000;
+      case 'XL':
+        return widget.price + 15000;
+      default:
+        return widget.price;
+    }
+  }
 
   final Color phucLongGreen = const Color(0xFF007E4F);
   final Color backgroundColor = const Color(0xFFF5F5F5);
@@ -25,8 +47,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    int basePrice = sizePrices[selectedSize] ?? 59000;
+    int basePrice = getSizePrice();
     int totalPrice = basePrice * quantity;
+    final currencyFormatter = NumberFormat('#,##0', 'vi_VN');
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -43,6 +66,40 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
+              final item = FoodItemModel(
+                id: DateTime.now().millisecondsSinceEpoch.toString(),
+                title: widget.name,
+                description: '',
+                category: FoodCategory.other, // Hoặc xác định đúng category nếu có
+                status: FoodStatus.available,
+                donorId: '',
+                donorName: '',
+                donorPhotoUrl: null,
+                imageUrl: widget.imageUrl,
+                expiryDate: DateTime.now().add(const Duration(days: 7)),
+                createdAt: DateTime.now(),
+                latitude: null,
+                longitude: null,
+                address: null,
+                pickupInstructions: null,
+                quantity: quantity,
+                quantityUnit: 'ly',
+                isAllergenFree: false,
+                allergens: const [],
+                rating: widget.rating,
+                reviewCount: 0,
+                price: basePrice,
+              );
+              // Clone list để cập nhật ValueNotifier
+              final items = List<FoodItemModel>.from(CartModel.cartItems.value);
+              final index = items.indexWhere((e) => e.title == item.title && e.imageUrl == item.imageUrl);
+              if (index != -1) {
+                final old = items[index];
+                items[index] = old.copyWith(quantity: old.quantity + quantity);
+              } else {
+                items.add(item);
+              }
+              CartModel.cartItems.value = items;
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Đã thêm vào giỏ hàng')),
               );
@@ -67,7 +124,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             children: [
               const SizedBox(height: 56),
               Image.network(
-                'https://phuclong.com.vn/uploads/dish/5d2325408be02.jpg',
+                widget.imageUrl,
                 height: 280,
                 fit: BoxFit.contain,
               ),
@@ -77,33 +134,24 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Trà Sữa Chôm Chôm ($selectedSize)',
+                      '${widget.name} ($selectedSize)',
                       style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: phucLongGreen),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Giá theo size: ${sizePrices[selectedSize]} Đồng',
+                      'Giá: ${currencyFormatter.format(basePrice)} Đồng',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: textColor),
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      'Trà Sữa Chôm Chôm thơm béo với topping chôm chôm giòn giòn, mát lạnh.',
-                      style: TextStyle(fontSize: 14, color: textColor),
-                    ),
-                    const SizedBox(height: 12),
                     Row(
                       children: [
-                        IconButton(
-                          icon: Icon(Icons.favorite_border, color: phucLongGreen),
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Đã thêm vào danh sách yêu thích')),
-                            );
-                          },
-                        ),
-                        Text('Thêm vào yêu thích', style: TextStyle(color: textColor)),
+                        const Icon(Icons.star, color: Colors.amber, size: 20),
+                        const SizedBox(width: 4),
+                        Text(widget.rating.toString(), style: TextStyle(fontSize: 16, color: textColor)),
                       ],
                     ),
+                    const SizedBox(height: 8),
+                    // Thêm mô tả nếu muốn
                   ],
                 ),
               ),
@@ -152,7 +200,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('Tổng giá', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: phucLongGreen)),
-                    Text('$totalPrice Đồng', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor)),
+                    Text('${currencyFormatter.format(totalPrice)} Đồng', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor)),
                   ],
                 ),
               ),

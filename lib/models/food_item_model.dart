@@ -78,6 +78,7 @@ class FoodItemModel {
   final List<String> allergens;
   final double rating;
   final int reviewCount;
+  final int price;
 
   FoodItemModel({
     required this.id,
@@ -101,6 +102,7 @@ class FoodItemModel {
     this.allergens = const [],
     this.rating = 0.0,
     this.reviewCount = 0,
+    this.price = 0,
   });
 
   factory FoodItemModel.fromMap(Map<String, dynamic> map) {
@@ -132,6 +134,7 @@ class FoodItemModel {
       allergens: List<String>.from(map['allergens'] ?? []),
       rating: map['rating']?.toDouble() ?? 0.0,
       reviewCount: map['reviewCount']?.toInt() ?? 0,
+      price: map['price']?.toInt() ?? 0,
     );
   }
 
@@ -158,6 +161,7 @@ class FoodItemModel {
       'allergens': allergens,
       'rating': rating,
       'reviewCount': reviewCount,
+      'price': price,
     };
   }
 
@@ -190,6 +194,7 @@ class FoodItemModel {
     List<String>? allergens,
     double? rating,
     int? reviewCount,
+    int? price,
   }) {
     return FoodItemModel(
       id: id ?? this.id,
@@ -213,6 +218,7 @@ class FoodItemModel {
       allergens: allergens ?? this.allergens,
       rating: rating ?? this.rating,
       reviewCount: reviewCount ?? this.reviewCount,
+      price: price ?? this.price,
     );
   }
 } 

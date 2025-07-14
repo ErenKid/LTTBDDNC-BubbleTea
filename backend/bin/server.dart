@@ -35,7 +35,9 @@ final handler = Router()
 
     try {
       final sendReport = await send(message, smtpServer);
-      print('Message sent: $sendReport');
+
+      print('Message sent: ' + sendReport.toString());
+
       return Response.ok(jsonEncode({'success': true}));
     } catch (e) {
       print('Message not sent: $e');
@@ -80,7 +82,9 @@ final handler = Router()
 
 void main() async {
   final server = await serve(
-    logRequests().addHandler(handler.call),
+
+    logRequests().addHandler(handler),
+
     InternetAddress.anyIPv4,
     8080,
   );

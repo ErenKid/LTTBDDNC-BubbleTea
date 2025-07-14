@@ -16,6 +16,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
   final _quantityController = TextEditingController();
   final _addressController = TextEditingController();
   final _pickupInstructionsController = TextEditingController();
+  final _imageUrlController = TextEditingController(); // Thêm controller cho imageUrl
   
   FoodCategory _selectedCategory = FoodCategory.other;
   String _selectedQuantityUnit = 'pieces';
@@ -39,6 +40,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
     _quantityController.dispose();
     _addressController.dispose();
     _pickupInstructionsController.dispose();
+    _imageUrlController.dispose(); // Dispose controller mới
     super.dispose();
   }
 
@@ -141,6 +143,53 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                       controller: _titleController,
                       decoration: InputDecoration(
                         hintText: '[Some hint text...]',
+                        hintStyle: const TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                          color: AppTheme.textLight,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: Color(0xFFE0E0E0)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: Color(0xFFE0E0E0)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: AppTheme.primaryOrange),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 14),
+              // Image URL input
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Image URL (online)',
+                      style: TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: AppTheme.textDark,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    TextField(
+                      controller: _imageUrlController,
+                      decoration: InputDecoration(
+                        hintText: 'https://example.com/image.jpg',
                         hintStyle: const TextStyle(
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.w400,
@@ -400,6 +449,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
         _quantityController.clear();
         _addressController.clear();
         _pickupInstructionsController.clear();
+        _imageUrlController.clear(); // Clear imageUrl
         setState(() {
           _selectedCategory = FoodCategory.other;
           _selectedQuantityUnit = 'pieces';

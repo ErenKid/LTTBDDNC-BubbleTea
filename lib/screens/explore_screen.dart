@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../models/product_data.dart';
+import 'product_detail_page.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
@@ -12,36 +14,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
   final TextEditingController _searchController = TextEditingController();
   String searchText = '';
 
-  final List<Map<String, dynamic>> _allProducts = [
-    {
-      'name': 'Matcha Latte',
-      'rating': 4.9,
-      'image': 'assets/images/matcha.png',
-      'category': 'Trà',
-    },
-    {
-      'name': 'Sữa tươi trân châu đường đen',
-      'rating': 4.8,
-      'image': 'assets/images/suatuoi.png',
-      'category': 'Sữa',
-    },
-    {
-      'name': 'Nước ép Việt Quốc',
-      'rating': 4.6,
-      'image': 'assets/images/vietquoc.png',
-      'category': 'Nước ép',
-    },
-    {
-      'name': 'Nước cộng đồng LGBT+',
-      'rating': 4.5,
-      'image': 'assets/images/lgbt.png',
-      'category': 'Đặc biệt',
-    },
-    // Thêm sản phẩm khác nếu cần
-  ];
+  final List<Map<String, dynamic>> _allProducts = productList;
 
   final List<String> _categories = [
-    'Tất cả', 'Trà', 'Sữa', 'Nước ép', 'Đặc biệt'
+    'Tất cả', 'Trà Sữa', 'Cà Phê', 'Nước Trái Cây', 'Bánh'
   ];
   String selectedCategory = 'Tất cả';
 
@@ -107,6 +83,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     Expanded(
                       child: TextField(
                         controller: _searchController,
+                        style: const TextStyle(color: AppTheme.textDark),
                         decoration: const InputDecoration(
                           hintText: 'Tìm kiếm',
                           border: InputBorder.none,
@@ -134,10 +111,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const Text(
-                                    'Chọn loại sản phẩm',
+                                    'Chọn món',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
+                                      color: AppTheme.textDark,
                                     ),
                                   ),
                                   const SizedBox(height: 16),
@@ -150,7 +128,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                         selected: isSelected,
                                         onSelected: (_) {
                                           setState(() {
-                                            selectedCategory = cat;
+                                            if (isSelected) {
+                                              selectedCategory = 'Tất cả';
+                                            } else {
+                                              selectedCategory = cat;
+                                            }
                                           });
                                           Navigator.pop(context);
                                         },
@@ -177,6 +159,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   fontFamily: 'Montserrat',
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
+                  color: AppTheme.textDark,
                 ),
               ),
               const SizedBox(height: 12),
@@ -195,6 +178,19 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                   product['name'],
                                   product['rating'],
                                   product['image'],
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ProductDetailPage(
+                                          name: product['name'],
+                                          imageUrl: product['image'],
+                                          rating: product['rating'],
+                                          price: product['price'],
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ))
                             .toList(),
                       ),
@@ -206,62 +202,67 @@ class _ExploreScreenState extends State<ExploreScreen> {
     );
   }
 
-  Widget _buildProductCard(String name, double rating, String imagePath) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Center(
-              child: Image.asset(
-                imagePath,
-                fit: BoxFit.contain,
-                filterQuality: FilterQuality.high,
-              ),
+  Widget _buildProductCard(String name, double rating, String imagePath, {VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            name,
-            style: const TextStyle(
-              fontFamily: 'Montserrat',
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-              color: AppTheme.textDark,
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 6),
-          Row(
-            children: [
-              const Icon(Icons.star, color: AppTheme.primaryOrange, size: 16),
-              const SizedBox(width: 4),
-              Text(
-                rating.toString(),
-                style: const TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.w500,
-                  fontSize: 13,
+          ],
+        ),
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Center(
+                child: Image.network(
+                  imagePath,
+                  fit: BoxFit.contain,
+                  filterQuality: FilterQuality.high,
+                  width: 110,
+                  height: 110,
                 ),
               ),
-              const Spacer(),
-              const Icon(Icons.favorite_border, size: 18, color: AppTheme.textLight),
-            ],
-          ),
-        ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              name,
+              style: const TextStyle(
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                color: AppTheme.textDark,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 6),
+            Row(
+              children: [
+                const Icon(Icons.star, color: AppTheme.primaryOrange, size: 16),
+                const SizedBox(width: 4),
+                Text(
+                  rating.toString(),
+                  style: const TextStyle(
+                    fontFamily: 'Montserrat',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13,
+                  ),
+                ),
+                const Spacer(),
+                const Icon(Icons.favorite_border, size: 18, color: AppTheme.textLight),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

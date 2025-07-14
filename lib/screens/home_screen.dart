@@ -4,6 +4,7 @@ import 'profile_screen.dart';
 import 'explore_screen.dart';
 import 'cart_screen.dart';
 import 'product_detail_page.dart'; // Added import for ProductDetailPage
+import '../models/product_data.dart';
 
 class HomeTabContent extends StatefulWidget {
   const HomeTabContent({super.key});
@@ -14,71 +15,26 @@ class HomeTabContent extends StatefulWidget {
 
 class _HomeTabContentState extends State<HomeTabContent> {
   String selectedCategory = 'Tất cả';
+  final TextEditingController _searchController = TextEditingController();
+  String searchText = '';
 
-  final List<Map<String, dynamic>> allProducts = [
-    {
-      'name': 'Oolong Hạt Sen',
-      'image': 'https://product.hstatic.net/200000399631/product/oolong_hat_sen_9d503ae63b534f8fabc58ce733a80360_1024x1024.jpg',
-      'rating': 4.7,
-      'price': 58000,
-      'category': 'Trà Sữa',
-    },
-    {
-      'name': 'Trà Lài Sữa Chân Châu',
-      'image': 'https://product.hstatic.net/200000399631/product/tra_lai_sua_tran_chau_cd661d498a9547c6b110ac5ebd67feda_1024x1024.jpg',
-      'rating': 4.5,
-      'price': 40000,
-      'category': 'Trà Sữa',
-    },
-    {
-      'name': 'Trà Vải',
-      'image': 'https://product.hstatic.net/200000399631/product/nang_dd840ca67504440186053f6512d5c319_1024x1024.jpg',
-      'rating': 4.6,
-      'price': 35000,
-      'category': 'Nước Trái Cây',
-    },
-    {
-      'name': 'Trà Thanh Long Dâu',
-      'image': 'https://product.hstatic.net/200000399631/product/tra_thanh_long_dau_f4d8ad8dd4ce42f299e0850e85defafe_master.jpg',
-      'rating': 4.9,
-      'price': 52000,
-      'category': 'Nước Trái Cây',
-    },
-    {
-      'name': 'Cà Phê Đen',
-      'image': 'https://product.hstatic.net/200000399631/product/cafe_den_da_93a2be4731c94c84b28dee1600e4ff1f_1024x1024.jpg',
-      'rating': 4.9,
-      'price': 45000,
-      'category': 'Cà Phê',
-    },
-    {
-      'name': 'Cà Phê Sữa Đá',
-      'image': 'https://product.hstatic.net/200000399631/product/cafe_sua_da_538f1cb5c8ca482e940a03121ab0975c_master.jpg',
-      'rating': 4.8,
-      'price': 50000,
-      'category': 'Cà Phê',
-    },
-    {
-      'name': 'Bánh mì bơ tỏi',
-      'image': 'https://product.hstatic.net/200000399631/product/banh_mi_bo_toi_695e5600e21a4f01ba120de3e3510ec9_1024x1024.jpg',
-      'rating': 4.4,
-      'price': 40000,
-      'category': 'Bánh',
-    },
-    {
-      'name': 'Bánh Sừng Bò',
-      'image': 'https://product.hstatic.net/200000399631/product/banh_croissant_5da481cf60b4447c9f7a98bb90803a9c.jpg',
-      'rating': 4.2,
-      'price': 30000,
-      'category': 'Bánh',
-    },
-  ];
+  // Sử dụng productList chung
+  List<Map<String, dynamic>> get filteredProducts {
+    return productList.where((p) {
+      final matchCategory = selectedCategory == 'Tất cả' || p['category'] == selectedCategory;
+      final matchName = searchText.isEmpty || p['name'].toString().toLowerCase().contains(searchText.toLowerCase());
+      return matchCategory && matchName;
+    }).toList();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final filteredProducts = selectedCategory == 'Tất cả'
-        ? allProducts
-        : allProducts.where((p) => p['category'] == selectedCategory).toList();
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
@@ -141,16 +97,23 @@ class _HomeTabContentState extends State<HomeTabContent> {
                     ],
                   ),
                   child: TextField(
+                    controller: _searchController,
+                    style: const TextStyle(color: AppTheme.textDark),
                     decoration: InputDecoration(
                       icon: const Icon(Icons.search, color: AppTheme.primaryOrange),
                       hintText: 'Bạn muốn uống gì?',
                       hintStyle: const TextStyle(
                         fontFamily: 'Montserrat',
-                        fontSize: 15,
+                        fontSize: 15, 
                         color: AppTheme.textLight,
                       ),
                       border: InputBorder.none,
                     ),
+                    onChanged: (value) {
+                      setState(() {
+                        searchText = value;
+                      });
+                    },
                   ),
                 ),
               ),
@@ -199,7 +162,11 @@ class _HomeTabContentState extends State<HomeTabContent> {
                     selected: selectedCategory == 'Trà Sữa',
                     onTap: () {
                       setState(() {
-                        selectedCategory = 'Trà Sữa';
+                        if (selectedCategory == 'Trà Sữa') {
+                          selectedCategory = 'Tất cả';
+                        } else {
+                          selectedCategory = 'Trà Sữa';
+                        }
                       });
                     },
                   )),
@@ -209,7 +176,11 @@ class _HomeTabContentState extends State<HomeTabContent> {
                     selected: selectedCategory == 'Nước Trái Cây',
                     onTap: () {
                       setState(() {
-                        selectedCategory = 'Nước Trái Cây';
+                        if (selectedCategory == 'Nước Trái Cây') {
+                          selectedCategory = 'Tất cả';
+                        } else {
+                          selectedCategory = 'Nước Trái Cây';
+                        }
                       });
                     },
                   )),
@@ -219,7 +190,11 @@ class _HomeTabContentState extends State<HomeTabContent> {
                     selected: selectedCategory == 'Cà Phê',
                     onTap: () {
                       setState(() {
-                        selectedCategory = 'Cà Phê';
+                        if (selectedCategory == 'Cà Phê') {
+                          selectedCategory = 'Tất cả';
+                        } else {
+                          selectedCategory = 'Cà Phê';
+                        }
                       });
                     },
                   )),
@@ -229,7 +204,11 @@ class _HomeTabContentState extends State<HomeTabContent> {
                     selected: selectedCategory == 'Bánh',
                     onTap: () {
                       setState(() {
-                        selectedCategory = 'Bánh';
+                        if (selectedCategory == 'Bánh') {
+                          selectedCategory = 'Tất cả';
+                        } else {
+                          selectedCategory = 'Bánh';
+                        }
                       });
                     },
                   )),
@@ -241,7 +220,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'Nước uống đặc biệt',
+                'Đặc biệt!',
                 style: TextStyle(
                   fontFamily: 'Montserrat',
                   fontWeight: FontWeight.bold,

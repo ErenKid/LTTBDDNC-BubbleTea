@@ -1,0 +1,58 @@
+final List<Map<String, dynamic>> productList = [
+  {
+    'name': 'Oolong Hạt Sen',
+    'image': 'https://product.hstatic.net/200000399631/product/oolong_hat_sen_9d503ae63b534f8fabc58ce733a80360_1024x1024.jpg',
+    'rating': 4.7,
+    'price': 58000,
+    'category': 'Trà Sữa',
+  },
+  {
+    'name': 'Trà Lài Sữa Chân Châu',
+    'image': 'https://product.hstatic.net/200000399631/product/tra_lai_sua_tran_chau_cd661d498a9547c6b110ac5ebd67feda_1024x1024.jpg',
+    'rating': 4.5,
+    'price': 40000,
+    'category': 'Trà Sữa',
+  },
+  {
+    'name': 'Trà Vải',
+    'image': 'https://product.hstatic.net/200000399631/product/nang_dd840ca67504440186053f6512d5c319_1024x1024.jpg',
+    'rating': 4.6,
+    'price': 35000,
+    'category': 'Nước Trái Cây',
+  },
+  {
+    'name': 'Trà Thanh Long Dâu',
+    'image': 'https://product.hstatic.net/200000399631/product/tra_thanh_long_dau_f4d8ad8dd4ce42f299e0850e85defafe_master.jpg',
+    'rating': 4.9,
+    'price': 52000,
+    'category': 'Nước Trái Cây',
+  },
+  {
+    'name': 'Cà Phê Đen',
+    'image': 'https://product.hstatic.net/200000399631/product/cafe_den_da_93a2be4731c94c84b28dee1600e4ff1f_1024x1024.jpg',
+    'rating': 4.9,
+    'price': 45000,
+    'category': 'Cà Phê',
+  },
+  {
+    'name': 'Cà Phê Sữa Đá',
+    'image': 'https://product.hstatic.net/200000399631/product/cafe_sua_da_538f1cb5c8ca482e940a03121ab0975c_master.jpg',
+    'rating': 4.8,
+    'price': 50000,
+    'category': 'Cà Phê',
+  },
+  {
+    'name': 'Bánh mì bơ tỏi',
+    'image': 'https://product.hstatic.net/200000399631/product/banh_mi_bo_toi_695e5600e21a4f01ba120de3e3510ec9_1024x1024.jpg',
+    'rating': 4.4,
+    'price': 40000,
+    'category': 'Bánh',
+  },
+  {
+    'name': 'Bánh Sừng Bò',
+    'image': 'https://product.hstatic.net/200000399631/product/banh_croissant_5da481cf60b4447c9f7a98bb90803a9c.jpg',
+    'rating': 4.2,
+    'price': 30000,
+    'category': 'Bánh',
+  },
+]; 

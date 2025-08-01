@@ -1,0 +1,102 @@
+import 'package:flutter/material.dart';
+
+class ProductInfoScreen extends StatelessWidget {
+  const ProductInfoScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Thông tin sản phẩm', style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.black),
+        elevation: 1,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            // Hình ảnh sản phẩm
+            Container(
+              height: 200,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(12),
+                image: const DecorationImage(
+                  image: NetworkImage('https://via.placeholder.com/500'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Thông tin chi tiết
+            _InfoRow(title: 'Tên', value: 'Bánh kem ngon tuyệt'),
+            _InfoRow(title: 'Giá', value: '12.99₫'),
+            _InfoRow(title: 'Tình trạng', value: 'Còn hàng'),
+            _InfoRow(title: 'Bộ sưu tập', value: 'Tráng miệng'),
+            _InfoRow(title: 'Thương hiệu', value: 'CakeHouse'),
+            _InfoRow(
+              title: 'Mô tả',
+              value: 'Một chiếc bánh socola mềm và ngon tuyệt, phủ kem và rắc hạt. Hoàn hảo cho mọi buổi tiệc.',
+              isMultiline: true,
+            ),
+            const Spacer(),
+
+            // Nút sửa
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  // TODO: Điều hướng đến trang sửa
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: const Text(
+                  'Sửa',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _InfoRow extends StatelessWidget {
+  final String title;
+  final String value;
+  final bool isMultiline;
+
+  const _InfoRow({required this.title, required this.value, this.isMultiline = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: Row(
+        crossAxisAlignment: isMultiline ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 100,
+            child: Text(
+              '$title:',
+              style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(color: Colors.black87),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

@@ -6,6 +6,8 @@ import 'screens/auth_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'theme/app_theme.dart';
+import 'screens/admin_product_list.dart';
+import 'screens/admin_product_list_add.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +26,8 @@ class ShareEatApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Share-Eat',
         theme: AppTheme.lightTheme,
-        home: const AppFlowController(),
+        // home: const AppFlowController()
+        home: AdminProductListScreen(),
         debugShowCheckedModeBanner: false,
 
         routes: {

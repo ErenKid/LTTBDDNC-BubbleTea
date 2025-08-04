@@ -3,7 +3,6 @@ import '../models/category_model.dart';
 import '../models/product_model.dart';
 import '../services/database_service.dart';
 import '../theme/app_theme.dart';
-import 'add_product_screen.dart';
 
 class ProductListScreen extends StatefulWidget {
   const ProductListScreen({super.key});
@@ -81,10 +80,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
   }
 
   Future<void> _navigateToAddProduct() async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const AddProductScreen()),
-    );
+    // Chuyển hướng tới ProductCrudScreen thay vì AddProductScreen
+    final result = await Navigator.pushNamed(context, '/product-crud');
 
     if (result == true) {
       _loadData(); // Reload data if product was added

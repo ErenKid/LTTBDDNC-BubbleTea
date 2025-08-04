@@ -127,7 +127,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               crossAxisCount: 2,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
-              childAspectRatio: 1.1,
+              childAspectRatio: 1.2, // Tăng tỷ lệ để có thêm chiều cao
               children: [
                 _buildManagementCard(
                   title: 'Quản lý người dùng',
@@ -239,57 +239,72 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     required VoidCallback onTap,
   }) {
     return Card(
-      elevation: 4,
+      elevation: 8,
+      shadowColor: color.withOpacity(0.3),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16), // Giảm padding
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16), // Giảm border radius
             gradient: LinearGradient(
               colors: [
-                color.withOpacity(0.1),
+                Colors.white,
                 color.withOpacity(0.05),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
+            border: Border.all(
+              color: color.withOpacity(0.1),
+              width: 1,
+            ),
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.min, // Thay đổi từ max thành min
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Icon với hiệu ứng đẹp
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(8), // Giảm padding
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(12),
+                  color: color.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(10), // Giảm border radius
                 ),
                 child: Icon(
                   icon,
-                  size: 28,
+                  size: 20, // Giảm size icon
                   color: color,
                 ),
               ),
-              const SizedBox(height: 12),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: color,
-                  fontFamily: 'Montserrat',
+              const SizedBox(height: 8), // Giảm spacing
+              
+              // Title với font đẹp hơn
+              Flexible( // Thêm Flexible để tránh overflow
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 13, // Giảm font size
+                    fontWeight: FontWeight.w700,
+                    color: AppTheme.textDark,
+                    fontFamily: 'Montserrat',
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const SizedBox(height: 6),
-              Expanded(
+              const SizedBox(height: 2), // Giảm spacing
+              
+              // Description với màu sắc đẹp hơn
+              Flexible( // Thêm Flexible để tránh overflow
                 child: Text(
                   description,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 10, // Giảm font size
                     color: Colors.grey.shade600,
                     fontFamily: 'Montserrat',
                   ),
@@ -297,13 +312,16 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const SizedBox(height: 8),
+              
+              const Spacer(),
+              
+              // Action button với style đẹp
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Icon(
                     Icons.arrow_forward_ios,
-                    size: 14,
+                    size: 10, // Giảm size icon
                     color: color,
                   ),
                 ],

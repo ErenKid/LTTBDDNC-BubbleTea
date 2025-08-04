@@ -4,11 +4,11 @@ import 'package:provider/provider.dart';
 import 'services/mock_auth_service.dart';
 import 'services/database_service.dart';
 import 'providers/category_provider.dart';
+import 'providers/product_provider.dart';
 import 'screens/auth_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/product_list_screen.dart';
-import 'screens/add_product_screen.dart';
 import 'screens/admin_dashboard_screen.dart';
 import 'screens/category_crud_screen.dart';
 import 'screens/product_crud_screen.dart';
@@ -35,6 +35,7 @@ class ShareEatApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => MockAuthService()),
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
+        ChangeNotifierProvider(create: (_) => ProductProvider()),
       ],
       child: MaterialApp(
         title: 'Share-Eat',
@@ -47,7 +48,6 @@ class ShareEatApp extends StatelessWidget {
           '/notifications': (context) => const NotificationScreen(),
           '/admin': (context) => AdminProductListScreen(),
           '/products': (context) => const ProductListScreen(),
-          '/add-product': (context) => const AddProductScreen(),
           '/admin-dashboard': (context) => const AdminDashboardScreen(),
           '/category-crud': (context) => const CategoryCrudScreen(),
           '/product-crud': (context) => const ProductCrudScreen(),

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:io';
 import '../theme/app_theme.dart';
 import 'profile_screen.dart';
 import 'explore_screen.dart';
 import 'cart_screen.dart';
-import 'product_detail_page.dart'; // Added import for ProductDetailPage
-import '../models/product_data.dart';
+import 'product_detail_page.dart';
+import '../models/product_model.dart';
 import '../models/category_model.dart';
 import '../providers/category_provider.dart';
+import '../providers/product_provider.dart';
+import '../services/mock_auth_service.dart';
 
 class HomeTabContent extends StatefulWidget {
   const HomeTabContent({super.key});
@@ -21,21 +24,38 @@ class _HomeTabContentState extends State<HomeTabContent> {
   final TextEditingController _searchController = TextEditingController();
   String searchText = '';
 
-  // Sử dụng productList chung
-  List<Map<String, dynamic>> get filteredProducts {
-    return productList.where((p) {
-      final matchCategory = selectedCategory == 'Tất cả' || p['category'] == selectedCategory;
-      final matchName = searchText.isEmpty || p['name'].toString().toLowerCase().contains(searchText.toLowerCase());
+  // Sử dụng ProductProvider từ provider
+  List<ProductModel> get filteredProducts {
+    final productProvider = Provider.of<ProductProvider>(context);
+    return productProvider.products.where((p) {
+      final matchCategory = selectedCategory == 'Tất cả' || _getCategoryNameById(p.categoryId) == selectedCategory;
+      final matchName = searchText.isEmpty || p.title.toLowerCase().contains(searchText.toLowerCase());
       return matchCategory && matchName;
     }).toList();
+  }
+
+  String _getCategoryNameById(String categoryId) {
+    final categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
+    final category = categoryProvider.categories.firstWhere(
+      (c) => c.id == categoryId,
+      orElse: () => CategoryModel(
+        id: '', 
+        name: 'Khác', 
+        colorHex: '#808080',
+        description: '',
+        createdAt: DateTime.now(),
+      ),
+    );
+    return category.name;
   }
 
   @override
   void initState() {
     super.initState();
-    // Load categories khi khởi tạo
+    // Load categories và products khi khởi tạo
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<CategoryProvider>(context, listen: false).loadCategories();
+      Provider.of<ProductProvider>(context, listen: false).loadProducts();
     });
   }
 
@@ -49,7 +69,10 @@ class _HomeTabContentState extends State<HomeTabContent> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: RefreshIndicator(
-        onRefresh: () => Provider.of<CategoryProvider>(context, listen: false).refreshCategories(),
+        onRefresh: () async {
+          await Provider.of<CategoryProvider>(context, listen: false).refreshCategories();
+          await Provider.of<ProductProvider>(context, listen: false).refreshProducts();
+        },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
@@ -83,9 +106,35 @@ class _HomeTabContentState extends State<HomeTabContent> {
                           },
                         ),
                         const SizedBox(width: 4),
-                        const CircleAvatar(
-                          radius: 20,
-                          backgroundImage: AssetImage('assets/images/pfp.png'),
+                        Consumer<MockAuthService>(
+                          builder: (context, authService, child) {
+                            final user = authService.currentUser;
+                            return CircleAvatar(
+                              radius: 20,
+                              backgroundColor: AppTheme.primaryOrange.withOpacity(0.2),
+                              child: user?.photoUrl?.isNotEmpty == true
+                                  ? ClipOval(
+                                      child: Image.network(
+                                        user!.photoUrl!,
+                                        width: 40,
+                                        height: 40,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return Icon(
+                                            Icons.person,
+                                            color: AppTheme.primaryOrange,
+                                            size: 24,
+                                          );
+                                        },
+                                      ),
+                                    )
+                                  : Icon(
+                                      Icons.person,
+                                      color: AppTheme.primaryOrange,
+                                      size: 24,
+                                    ),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -190,7 +239,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
                 }
                 
                 return Container(
-                  height: 90,
+                  height: 50, // Giảm chiều cao
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
@@ -199,15 +248,13 @@ class _HomeTabContentState extends State<HomeTabContent> {
                       if (index == 0) {
                         // "Tất cả" button
                         return Container(
-                          width: 80,
-                          margin: const EdgeInsets.only(right: 12),
+                          margin: const EdgeInsets.only(right: 8),
                           child: _buildAllCategoriesButton(),
                         );
                       }
                       final category = categoryProvider.categories[index - 1];
                       return Container(
-                        width: 80,
-                        margin: const EdgeInsets.only(right: 12),
+                        margin: const EdgeInsets.only(right: 8),
                         child: _buildDynamicCategory(category),
                       );
                     },
@@ -283,33 +330,45 @@ class _HomeTabContentState extends State<HomeTabContent> {
             const SizedBox(height: 18),
             Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              crossAxisSpacing: 18,
-              mainAxisSpacing: 18,
-              childAspectRatio: 0.7,
+            child: Consumer<ProductProvider>(
+              builder: (context, productProvider, child) {
+                return productProvider.isLoading
+                    ? const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(32.0),
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    : GridView.count(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 18,
+                        mainAxisSpacing: 18,
+                        childAspectRatio: 0.7,
 
-              children: filteredProducts.map((product) => _buildProductCard(
-                product['name'],
-                product['rating'],
-                product['image'],
-                isNetwork: true,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProductDetailPage(
-                        name: product['name'],
-                        imageUrl: product['image'],
-                        rating: product['rating'],
-                        price: product['price'],
-                      ),
-                    ),
-                  );
-                },
-              )).toList(),
+                        children: filteredProducts.map((product) => _buildProductCard(
+                          product.title,
+                          4.5, // Default rating since ProductModel might not have rating
+                          product.imageUrl ?? '', // Use product imageUrl instead of donorPhotoUrl
+                          isNetwork: true,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProductDetailPage(
+                                  name: product.title,
+                                  imageUrl: product.imageUrl ?? '',
+                                  imageUrls: product.imageUrls, // Truyền danh sách ảnh
+                                  rating: 4.5,
+                                  price: product.price,
+                                ),
+                              ),
+                            );
+                          },
+                        )).toList(),
+                      );
+              },
             ),
           ),
 
@@ -404,47 +463,29 @@ class _HomeTabContentState extends State<HomeTabContent> {
             }
           });
         },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                color: Color(int.parse(category.colorHex.substring(1), radix: 16) + 0xFF000000),
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: isSelected ? AppTheme.primaryOrange : Colors.transparent,
-                  width: 3,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: const Icon(
-                Icons.category,
-                color: Colors.white,
-                size: 28,
-              ),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: isSelected 
+                ? Color(int.parse(category.colorHex.substring(1), radix: 16) + 0xFF000000)
+                : Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: isSelected 
+                  ? Color(int.parse(category.colorHex.substring(1), radix: 16) + 0xFF000000)
+                  : Colors.grey.shade300,
+              width: 1,
             ),
-            const SizedBox(height: 8),
-            Text(
-              category.name,
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                fontSize: 11,
-                color: isSelected ? AppTheme.primaryOrange : AppTheme.textDark,
-              ),
+          ),
+          child: Text(
+            category.name,
+            style: TextStyle(
+              fontFamily: 'Montserrat',
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+              fontSize: 14,
+              color: isSelected ? Colors.white : AppTheme.textDark,
             ),
-          ],
+          ),
         ),
       );
     }
@@ -457,50 +498,33 @@ class _HomeTabContentState extends State<HomeTabContent> {
             selectedCategory = 'Tất cả';
           });
         },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                color: isSelected ? AppTheme.primaryOrange : Colors.grey.shade300,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: isSelected ? AppTheme.primaryOrange : Colors.transparent,
-                  width: 3,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Icon(
-                Icons.apps,
-                color: isSelected ? Colors.white : Colors.grey.shade600,
-                size: 28,
-              ),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: isSelected ? AppTheme.primaryOrange : Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: isSelected ? AppTheme.primaryOrange : Colors.grey.shade300,
+              width: 1,
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Tất cả',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                fontSize: 11,
-                color: isSelected ? AppTheme.primaryOrange : AppTheme.textDark,
-              ),
+          ),
+          child: Text(
+            'Tất cả',
+            style: TextStyle(
+              fontFamily: 'Montserrat',
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+              fontSize: 14,
+              color: isSelected ? Colors.white : AppTheme.textDark,
             ),
-          ],
+          ),
         ),
       );
     }
 }
 Widget _buildProductCard(String name, double rating, String imagePath, {bool isNetwork = false, VoidCallback? onTap}) {
+  // Kiểm tra xem đây có phải là đường dẫn file local không
+  final bool isLocalFile = imagePath.isNotEmpty && !imagePath.startsWith('http') && !imagePath.startsWith('assets/');
+  
   return GestureDetector(
     onTap: onTap,
     child: Container(
@@ -521,27 +545,7 @@ Widget _buildProductCard(String name, double rating, String imagePath, {bool isN
         children: [
           Expanded(
             child: Center(
-              child: isNetwork
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(14),
-                      child: Image.network(
-                        imagePath,
-                        fit: BoxFit.contain,
-                        filterQuality: FilterQuality.high,
-                        width: 110,
-                        height: 110,
-                      ),
-                    )
-                  : ClipRRect(
-                      borderRadius: BorderRadius.circular(14),
-                      child: Image.asset(
-                        imagePath,
-                        fit: BoxFit.contain,
-                        filterQuality: FilterQuality.high,
-                        width: 110,
-                        height: 110,
-                      ),
-                    ),
+              child: _buildImageWidget(imagePath, isNetwork, isLocalFile),
             ),
           ),
           const SizedBox(height: 14),
@@ -575,6 +579,97 @@ Widget _buildProductCard(String name, double rating, String imagePath, {bool isN
           ),
         ],
       ),
+    ),
+  );
+}
+
+// Hàm helper để xử lý hiển thị ảnh  
+Widget _buildImageWidget(String imagePath, bool isNetwork, bool isLocalFile) {
+  if (imagePath.isEmpty) {
+    return Container(
+      width: 110,
+      height: 110,
+      decoration: BoxDecoration(
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.shopping_bag_outlined, 
+               color: Colors.grey.shade400, size: 40),
+          const SizedBox(height: 4),
+          Text('Sản phẩm', 
+               style: TextStyle(color: Colors.grey.shade500, fontSize: 10)),
+        ],
+      ),
+    );
+  }
+
+  Widget imageWidget;
+  
+  if (isLocalFile) {
+    // Ảnh từ file local
+    imageWidget = Image.file(
+      File(imagePath),
+      fit: BoxFit.cover,
+      filterQuality: FilterQuality.high,
+      width: 110,
+      height: 110,
+      errorBuilder: (context, error, stackTrace) {
+        return _buildErrorImageWidget();
+      },
+    );
+  } else if (isNetwork || imagePath.startsWith('http')) {
+    // Ảnh từ network
+    imageWidget = Image.network(
+      imagePath,
+      fit: BoxFit.cover,
+      filterQuality: FilterQuality.high,
+      width: 110,
+      height: 110,
+      errorBuilder: (context, error, stackTrace) {
+        return _buildErrorImageWidget();
+      },
+    );
+  } else {
+    // Ảnh từ assets
+    imageWidget = Image.asset(
+      imagePath,
+      fit: BoxFit.cover,
+      filterQuality: FilterQuality.high,
+      width: 110,
+      height: 110,
+      errorBuilder: (context, error, stackTrace) {
+        return _buildErrorImageWidget();
+      },
+    );
+  }
+
+  return ClipRRect(
+    borderRadius: BorderRadius.circular(14),
+    child: imageWidget,
+  );
+}
+
+// Hàm helper để hiển thị error image
+Widget _buildErrorImageWidget() {
+  return Container(
+    width: 110,
+    height: 110,
+    decoration: BoxDecoration(
+      color: Colors.grey.shade200,
+      borderRadius: BorderRadius.circular(14),
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.image_not_supported, 
+             color: Colors.grey.shade400, size: 40),
+        const SizedBox(height: 4),
+        Text('Không có ảnh', 
+             style: TextStyle(color: Colors.grey.shade500, fontSize: 10)),
+      ],
     ),
   );
 }

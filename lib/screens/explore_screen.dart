@@ -185,6 +185,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                         builder: (context) => ProductDetailPage(
                                           name: product['name'],
                                           imageUrl: product['image'],
+                                          imageUrls: const [], // Mặc định trống cho explore
                                           rating: product['rating'],
                                           price: product['price'],
                                         ),

@@ -1,4 +1,3 @@
-import 'user_model.dart';
 
 enum FoodCategory {
   fruits,
@@ -66,6 +65,7 @@ class FoodItemModel {
   final String donorName;
   final String? donorPhotoUrl;
   final String? imageUrl;
+  final List<String> imageUrls; // Danh sách nhiều ảnh
   final DateTime expiryDate;
   final DateTime createdAt;
   final double? latitude;
@@ -90,6 +90,7 @@ class FoodItemModel {
     required this.donorName,
     this.donorPhotoUrl,
     this.imageUrl,
+    this.imageUrls = const [], // Mặc định là danh sách rỗng
     required this.expiryDate,
     required this.createdAt,
     this.latitude,
@@ -122,8 +123,9 @@ class FoodItemModel {
       donorName: map['donorName'] ?? '',
       donorPhotoUrl: map['donorPhotoUrl'],
       imageUrl: map['imageUrl'],
-      expiryDate: (map['expiryDate'] as Timestamp).toDate(),
-      createdAt: (map['createdAt'] as Timestamp).toDate(),
+      imageUrls: List<String>.from(map['imageUrls'] ?? []),
+      expiryDate: DateTime.parse(map['expiryDate'] ?? DateTime.now().toIso8601String()),
+      createdAt: DateTime.parse(map['createdAt'] ?? DateTime.now().toIso8601String()),
       latitude: map['latitude']?.toDouble(),
       longitude: map['longitude']?.toDouble(),
       address: map['address'],
@@ -149,6 +151,7 @@ class FoodItemModel {
       'donorName': donorName,
       'donorPhotoUrl': donorPhotoUrl,
       'imageUrl': imageUrl,
+      'imageUrls': imageUrls,
       'expiryDate': expiryDate,
       'createdAt': createdAt,
       'latitude': latitude,
@@ -182,6 +185,7 @@ class FoodItemModel {
     String? donorName,
     String? donorPhotoUrl,
     String? imageUrl,
+    List<String>? imageUrls,
     DateTime? expiryDate,
     DateTime? createdAt,
     double? latitude,
@@ -206,6 +210,7 @@ class FoodItemModel {
       donorName: donorName ?? this.donorName,
       donorPhotoUrl: donorPhotoUrl ?? this.donorPhotoUrl,
       imageUrl: imageUrl ?? this.imageUrl,
+      imageUrls: imageUrls ?? this.imageUrls,
       expiryDate: expiryDate ?? this.expiryDate,
       createdAt: createdAt ?? this.createdAt,
       latitude: latitude ?? this.latitude,

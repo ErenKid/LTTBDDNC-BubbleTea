@@ -22,7 +22,7 @@ class DatabaseService {
     final path = join(dbPath, 'app.db');
     return await openDatabase(
       path,
-      version: 3, // Tăng version để update schema
+      version: 5, // Tăng version để thêm trường imageUrls
       onCreate: (db, version) async {
         // Tạo bảng users
         await db.execute('''
@@ -70,6 +70,7 @@ class DatabaseService {
             donorName TEXT NOT NULL,
             donorPhotoUrl TEXT,
             imageUrl TEXT,
+            imageUrls TEXT DEFAULT '',
             expiryDate TEXT NOT NULL,
             createdAt TEXT NOT NULL,
             latitude REAL,
@@ -121,6 +122,7 @@ class DatabaseService {
               donorName TEXT NOT NULL,
               donorPhotoUrl TEXT,
               imageUrl TEXT,
+              imageUrls TEXT DEFAULT '',
               expiryDate TEXT NOT NULL,
               createdAt TEXT NOT NULL,
               latitude REAL,
@@ -149,8 +151,21 @@ class DatabaseService {
           await db.delete('products');
           await _insertDefaultProducts(db);
         }
+
+        if (oldVersion < 5) {
+          // Thêm trường imageUrls vào bảng products
+          await db.execute('ALTER TABLE products ADD COLUMN imageUrls TEXT DEFAULT ""');
+        }
       },
     );
+  }
+
+  // Method để reset database (dùng cho debugging)
+  Future<void> resetDatabase() async {
+    final dbPath = await getDatabasesPath();
+    final path = join(dbPath, 'app.db');
+    await deleteDatabase(path);
+    _db = null;
   }
 
   // Thêm categories mặc định
@@ -517,8 +532,11 @@ class DatabaseService {
 
   // Thêm product mới
   Future<int> addProduct(ProductModel product) async {
+    print('DEBUG - Adding product: ${product.title}');
     final dbClient = await db;
-    return await dbClient.insert('products', product.toMap());
+    final result = await dbClient.insert('products', product.toMap());
+    print('DEBUG - Product added successfully with result: $result');
+    return result;
   }
 
   // Cập nhật product

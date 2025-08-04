@@ -1,4 +1,4 @@
-import 'category_model.dart';
+
 
 enum ProductStatus {
   available,
@@ -45,6 +45,7 @@ class ProductModel {
   final String donorName;
   final String? donorPhotoUrl;
   final String? imageUrl;
+  final List<String> imageUrls; // Danh sách nhiều ảnh
   final DateTime expiryDate;
   final DateTime createdAt;
   final double? latitude;
@@ -69,6 +70,7 @@ class ProductModel {
     required this.donorName,
     this.donorPhotoUrl,
     this.imageUrl,
+    this.imageUrls = const [], // Mặc định là danh sách rỗng
     required this.expiryDate,
     required this.createdAt,
     this.latitude,
@@ -98,6 +100,7 @@ class ProductModel {
       donorName: map['donorName'] as String,
       donorPhotoUrl: map['donorPhotoUrl'] as String?,
       imageUrl: map['imageUrl'] as String?,
+      imageUrls: (map['imageUrls'] as String? ?? '').split(',').where((s) => s.isNotEmpty).toList(),
       expiryDate: DateTime.parse(map['expiryDate'] as String),
       createdAt: DateTime.parse(map['createdAt'] as String),
       latitude: map['latitude'] != null ? (map['latitude'] as num).toDouble() : null,
@@ -125,6 +128,7 @@ class ProductModel {
       'donorName': donorName,
       'donorPhotoUrl': donorPhotoUrl,
       'imageUrl': imageUrl,
+      'imageUrls': imageUrls.join(','), // Chuyển List thành String
       'expiryDate': expiryDate.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
       'latitude': latitude,
@@ -151,6 +155,7 @@ class ProductModel {
     String? donorName,
     String? donorPhotoUrl,
     String? imageUrl,
+    List<String>? imageUrls,
     DateTime? expiryDate,
     DateTime? createdAt,
     double? latitude,
@@ -175,6 +180,7 @@ class ProductModel {
       donorName: donorName ?? this.donorName,
       donorPhotoUrl: donorPhotoUrl ?? this.donorPhotoUrl,
       imageUrl: imageUrl ?? this.imageUrl,
+      imageUrls: imageUrls ?? this.imageUrls,
       expiryDate: expiryDate ?? this.expiryDate,
       createdAt: createdAt ?? this.createdAt,
       latitude: latitude ?? this.latitude,

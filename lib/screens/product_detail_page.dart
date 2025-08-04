@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'dart:io';
 import '../models/cart_model.dart';
 import '../models/food_item_model.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final String name;
   final String imageUrl;
+  final List<String> imageUrls; // Danh sách nhiều ảnh
   final double rating;
   final int price;
 
@@ -13,6 +15,7 @@ class ProductDetailPage extends StatefulWidget {
     super.key,
     required this.name,
     required this.imageUrl,
+    this.imageUrls = const [], // Mặc định là danh sách rỗng
     required this.rating,
     required this.price,
   });
@@ -25,6 +28,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   int quantity = 1;
   String selectedSize = 'S';
   String selectedIce = 'direct';
+  int currentImageIndex = 0; // Index của ảnh hiện tại
+  PageController pageController = PageController(); // Controller cho PageView
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
+  }
 
   int getSizePrice() {
     switch (selectedSize) {
@@ -44,6 +55,186 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   final Color phucLongGreen = const Color(0xFF007E4F);
   final Color backgroundColor = const Color(0xFFF5F5F5);
   final Color textColor = const Color(0xFF1B1B1B);
+
+  // Hàm helper để hiển thị ảnh sản phẩm (hỗ trợ nhiều ảnh)
+  Widget _buildProductImage() {
+    // Tạo danh sách tất cả ảnh (bao gồm imageUrl chính và imageUrls)
+    List<String> allImages = [];
+    if (widget.imageUrl.isNotEmpty) {
+      allImages.add(widget.imageUrl);
+    }
+    allImages.addAll(widget.imageUrls);
+
+    // Nếu không có ảnh nào
+    if (allImages.isEmpty) {
+      return Container(
+        height: 280,
+        decoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.image_not_supported, 
+                 color: Colors.grey.shade400, size: 80),
+            const SizedBox(height: 8),
+            Text('Không có ảnh', 
+                 style: TextStyle(color: Colors.grey.shade500, fontSize: 16)),
+          ],
+        ),
+      );
+    }
+
+    return Stack(
+      children: [
+        // PageView hiển thị ảnh
+        SizedBox(
+          height: 280,
+          child: PageView.builder(
+            controller: pageController,
+            onPageChanged: (index) {
+              setState(() {
+                currentImageIndex = index;
+              });
+            },
+            itemCount: allImages.length,
+            itemBuilder: (context, index) {
+              return _buildSingleImage(allImages[index]);
+            },
+          ),
+        ),
+        
+        // Indicator hiển thị vị trí ảnh hiện tại (chỉ hiển thị khi có > 1 ảnh)
+        if (allImages.length > 1)
+          Positioned(
+            bottom: 16,
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                allImages.length,
+                (index) => Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: currentImageIndex == index 
+                        ? phucLongGreen 
+                        : Colors.white.withOpacity(0.5),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          
+        // Số thứ tự ảnh (1/3, 2/3, ...)
+        if (allImages.length > 1)
+          Positioned(
+            top: 16,
+            right: 16,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.6),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                '${currentImageIndex + 1}/${allImages.length}',
+                style: const TextStyle(color: Colors.white, fontSize: 12),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  // Hàm helper để hiển thị một ảnh đơn
+  Widget _buildSingleImage(String imageUrl) {
+    // Kiểm tra xem đây có phải là đường dẫn file local không
+    final bool isLocalFile = imageUrl.isNotEmpty && 
+                            !imageUrl.startsWith('http') && 
+                            !imageUrl.startsWith('assets/');
+
+    Widget imageWidget;
+    
+    if (isLocalFile) {
+      // Ảnh từ file local
+      imageWidget = Image.file(
+        File(imageUrl),
+        height: 280,
+        width: double.infinity,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) {
+          return _buildErrorImage();
+        },
+      );
+    } else if (imageUrl.startsWith('http')) {
+      // Ảnh từ network
+      imageWidget = Image.network(
+        imageUrl,
+        height: 280,
+        width: double.infinity,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) {
+          return _buildErrorImage();
+        },
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            height: 280,
+            child: Center(
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded / 
+                      loadingProgress.expectedTotalBytes!
+                    : null,
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      // Ảnh từ assets
+      imageWidget = Image.asset(
+        imageUrl,
+        height: 280,
+        width: double.infinity,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) {
+          return _buildErrorImage();
+        },
+      );
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: imageWidget,
+    );
+  }
+
+  // Hàm helper để hiển thị error image
+  Widget _buildErrorImage() {
+    return Container(
+      height: 280,
+      decoration: BoxDecoration(
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.image_not_supported, 
+               color: Colors.grey.shade400, size: 80),
+          const SizedBox(height: 8),
+          Text('Không thể tải ảnh', 
+               style: TextStyle(color: Colors.grey.shade500, fontSize: 16)),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,11 +314,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             padding: const EdgeInsets.all(16),
             children: [
               const SizedBox(height: 56),
-              Image.network(
-                widget.imageUrl,
-                height: 280,
-                fit: BoxFit.contain,
-              ),
+              _buildProductImage(),
               const SizedBox(height: 16),
               _buildWhiteBox(
                 Column(

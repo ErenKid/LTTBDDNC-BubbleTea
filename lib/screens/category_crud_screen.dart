@@ -50,6 +50,10 @@ class _CategoryCrudScreenState extends State<CategoryCrudScreen> {
               children: [
                 TextFormField(
                   controller: nameController,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontFamily: 'Montserrat',
+                  ),
                   decoration: const InputDecoration(
                     labelText: 'Tên danh mục *',
                     border: OutlineInputBorder(),
@@ -59,6 +63,10 @@ class _CategoryCrudScreenState extends State<CategoryCrudScreen> {
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: descController,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontFamily: 'Montserrat',
+                  ),
                   decoration: const InputDecoration(
                     labelText: 'Mô tả',
                     border: OutlineInputBorder(),

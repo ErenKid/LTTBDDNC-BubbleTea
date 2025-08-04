@@ -11,6 +11,19 @@ import 'package:mailer/smtp_server.dart';
 // Lưu mã xác nhận tạm thời (email -> code)
 final Map<String, String> verificationCodes = {};
 
+// Lưu trữ users tạm thời (trong thực tế nên dùng database)
+final Map<String, Map<String, dynamic>> users = {
+  'admin@gmail.com': {
+    'id': 'admin_001',
+    'email': 'admin@gmail.com',
+    'name': 'Admin',
+    'password': 'admin123',
+    'isAdmin': true,
+    'isVerified': true,
+    'createdAt': DateTime.now().toIso8601String(),
+  }
+};
+
 final handler = Router()
   ..post('/send-code', (Request request) async {
     final body = await request.readAsString();
@@ -36,7 +49,7 @@ final handler = Router()
     try {
       final sendReport = await send(message, smtpServer);
 
-      print('Message sent: ' + sendReport.toString());
+      print('Message sent: $sendReport');
 
       return Response.ok(jsonEncode({'success': true}));
     } catch (e) {
@@ -77,6 +90,32 @@ final handler = Router()
       return Response.ok(jsonEncode({'success': true}));
     } else {
       return Response.forbidden(jsonEncode({'success': false, 'message': 'Mã xác nhận không đúng'}));
+    }
+  })
+  ..post('/login', (Request request) async {
+    final body = await request.readAsString();
+    final data = jsonDecode(body);
+    final email = data['email'] as String?;
+    final password = data['password'] as String?;
+
+    if (email == null || password == null) {
+      return Response.badRequest(body: 'Missing email or password');
+    }
+
+    if (users.containsKey(email) && users[email]!['password'] == password) {
+      final user = users[email]!;
+      return Response.ok(jsonEncode({
+        'success': true,
+        'user': {
+          'id': user['id'],
+          'email': user['email'],
+          'name': user['name'],
+          'isAdmin': user['isAdmin'],
+          'isVerified': user['isVerified'],
+        }
+      }));
+    } else {
+      return Response.unauthorized(jsonEncode({'success': false, 'message': 'Email hoặc mật khẩu không đúng'}));
     }
   });
 

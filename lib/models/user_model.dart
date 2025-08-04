@@ -13,6 +13,7 @@ class UserModel {
   final DateTime createdAt;
   final bool isVerified;
   final String password;
+  final bool isAdmin;
 
   UserModel({
     required this.id,
@@ -29,6 +30,7 @@ class UserModel {
     required this.createdAt,
     this.isVerified = false,
     required this.password,
+    this.isAdmin = false,
   });
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
@@ -47,6 +49,7 @@ class UserModel {
       createdAt: (map['createdAt'] as Timestamp).toDate(),
       isVerified: map['isVerified'] ?? false,
       password: map['password'] ?? '',
+      isAdmin: map['isAdmin'] ?? false,
     );
   }
 
@@ -66,6 +69,7 @@ class UserModel {
       'createdAt': createdAt,
       'isVerified': isVerified,
       'password': password,
+      'isAdmin': isAdmin,
     };
   }
 
@@ -84,6 +88,7 @@ class UserModel {
     DateTime? createdAt,
     bool? isVerified,
     String? password,
+    bool? isAdmin,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -100,6 +105,7 @@ class UserModel {
       createdAt: createdAt ?? this.createdAt,
       isVerified: isVerified ?? this.isVerified,
       password: password ?? this.password,
+      isAdmin: isAdmin ?? this.isAdmin,
     );
   }
 }

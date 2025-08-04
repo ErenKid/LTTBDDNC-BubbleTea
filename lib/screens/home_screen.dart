@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../theme/app_theme.dart';
 import 'profile_screen.dart';
 import 'explore_screen.dart';
 import 'cart_screen.dart';
 import 'product_detail_page.dart'; // Added import for ProductDetailPage
 import '../models/product_data.dart';
+import '../models/category_model.dart';
+import '../providers/category_provider.dart';
 
 class HomeTabContent extends StatefulWidget {
   const HomeTabContent({super.key});
@@ -28,6 +31,15 @@ class _HomeTabContentState extends State<HomeTabContent> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    // Load categories khi khởi tạo
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<CategoryProvider>(context, listen: false).loadCategories();
+    });
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
@@ -36,10 +48,13 @@ class _HomeTabContentState extends State<HomeTabContent> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      child: RefreshIndicator(
+        onRefresh: () => Provider.of<CategoryProvider>(context, listen: false).refreshCategories(),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
             // Location Bar
             // Top Greeting + Avatar
               Padding(
@@ -150,71 +165,56 @@ class _HomeTabContentState extends State<HomeTabContent> {
               ),
             ),
             const SizedBox(height: 10),
-            // Thay thế phần ListView các loại nước uống bằng Row + Expanded cho cân đối
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                  Expanded(child: _buildCategoryFF(
-                    'Trà Sữa',
-                    'assets/images/tea.png',
-                    selected: selectedCategory == 'Trà Sữa',
-                    onTap: () {
-                      setState(() {
-                        if (selectedCategory == 'Trà Sữa') {
-                          selectedCategory = 'Tất cả';
-                        } else {
-                          selectedCategory = 'Trà Sữa';
-                        }
-                      });
+            // Dynamic Categories from Database
+            Consumer<CategoryProvider>(
+              builder: (context, categoryProvider, child) {
+                if (categoryProvider.isLoading) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
+                
+                if (categoryProvider.categories.isEmpty) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      'Chưa có danh mục nào',
+                      style: TextStyle(
+                        fontFamily: 'Montserrat',
+                        color: Colors.grey,
+                        fontSize: 14,
+                      ),
+                    ),
+                  );
+                }
+                
+                return Container(
+                  height: 90,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: categoryProvider.categories.length + 1, // +1 for "Tất cả" button
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        // "Tất cả" button
+                        return Container(
+                          width: 80,
+                          margin: const EdgeInsets.only(right: 12),
+                          child: _buildAllCategoriesButton(),
+                        );
+                      }
+                      final category = categoryProvider.categories[index - 1];
+                      return Container(
+                        width: 80,
+                        margin: const EdgeInsets.only(right: 12),
+                        child: _buildDynamicCategory(category),
+                      );
                     },
-                  )),
-                  Expanded(child: _buildCategoryFF(
-                    'Nước Trái Cây',
-                    'assets/images/juice.png',
-                    selected: selectedCategory == 'Nước Trái Cây',
-                    onTap: () {
-                      setState(() {
-                        if (selectedCategory == 'Nước Trái Cây') {
-                          selectedCategory = 'Tất cả';
-                        } else {
-                          selectedCategory = 'Nước Trái Cây';
-                        }
-                      });
-                    },
-                  )),
-                  Expanded(child: _buildCategoryFF(
-                    'Cà Phê',
-                    'assets/images/coffee.png',
-                    selected: selectedCategory == 'Cà Phê',
-                    onTap: () {
-                      setState(() {
-                        if (selectedCategory == 'Cà Phê') {
-                          selectedCategory = 'Tất cả';
-                        } else {
-                          selectedCategory = 'Cà Phê';
-                        }
-                      });
-                    },
-                  )),
-                  Expanded(child: _buildCategoryFF(
-                    'Bánh',
-                    'assets/images/cake.png',
-                    selected: selectedCategory == 'Bánh',
-                    onTap: () {
-                      setState(() {
-                        if (selectedCategory == 'Bánh') {
-                          selectedCategory = 'Tất cả';
-                        } else {
-                          selectedCategory = 'Bánh';
-                        }
-                      });
-                    },
-                  )),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
+            ),
             const SizedBox(height: 18),
             // Special Offers
             const Padding(
@@ -316,6 +316,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
           ],
         ),
       ),
+        ),
     );
   }
 
@@ -384,6 +385,114 @@ class _HomeTabContentState extends State<HomeTabContent> {
                 fontWeight: selected ? FontWeight.bold : FontWeight.w500,
                 fontSize: 12,
                 color: selected ? AppTheme.primaryOrange : AppTheme.textDark,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    Widget _buildDynamicCategory(CategoryModel category) {
+      final isSelected = selectedCategory == category.name;
+      return GestureDetector(
+        onTap: () {
+          setState(() {
+            if (selectedCategory == category.name) {
+              selectedCategory = 'Tất cả';
+            } else {
+              selectedCategory = category.name;
+            }
+          });
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                color: Color(int.parse(category.colorHex.substring(1), radix: 16) + 0xFF000000),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: isSelected ? AppTheme.primaryOrange : Colors.transparent,
+                  width: 3,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.category,
+                color: Colors.white,
+                size: 28,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              category.name,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontFamily: 'Montserrat',
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                fontSize: 11,
+                color: isSelected ? AppTheme.primaryOrange : AppTheme.textDark,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    Widget _buildAllCategoriesButton() {
+      final isSelected = selectedCategory == 'Tất cả';
+      return GestureDetector(
+        onTap: () {
+          setState(() {
+            selectedCategory = 'Tất cả';
+          });
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                color: isSelected ? AppTheme.primaryOrange : Colors.grey.shade300,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: isSelected ? AppTheme.primaryOrange : Colors.transparent,
+                  width: 3,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Icon(
+                Icons.apps,
+                color: isSelected ? Colors.white : Colors.grey.shade600,
+                size: 28,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Tất cả',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Montserrat',
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                fontSize: 11,
+                color: isSelected ? AppTheme.primaryOrange : AppTheme.textDark,
               ),
             ),
           ],

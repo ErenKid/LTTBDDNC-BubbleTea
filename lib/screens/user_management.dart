@@ -24,7 +24,7 @@ class UserManagementPage extends StatefulWidget {
 }
 
 class _UserManagementPageState extends State<UserManagementPage> {
-  List<User> _users = [
+  final List<User> _users = [
     User(
       username: 'admin',
       email: 'admin@example.com',

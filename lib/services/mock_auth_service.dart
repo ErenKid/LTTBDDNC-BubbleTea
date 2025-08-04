@@ -76,11 +76,27 @@ class MockAuthService extends ChangeNotifier {
       // Simulate API call
       await Future.delayed(const Duration(seconds: 1));
       
+      // Check for admin account
+      bool isAdmin = false;
+      String userId = 'demo-user-id';
+      String userName = email.split('@')[0];
+      bool isVerified = false;
+      
+      if (email == 'admin@gmail.com' && password == 'admin123') {
+        isAdmin = true;
+        userId = 'admin-user-id';
+        userName = 'Administrator';
+        isVerified = true;
+        print('DEBUG - Admin login successful');
+      } else {
+        print('DEBUG - Regular user login: $email');
+      }
+      
       // Mock user for demo
       final user = UserModel(
-        id: 'demo-user-id',
+        id: userId,
         email: email,
-        name: email.split('@')[0],
+        name: userName,
         createdAt: DateTime.now().subtract(const Duration(days: 30)),
         password: password,
         photoUrl: null,
@@ -91,10 +107,12 @@ class MockAuthService extends ChangeNotifier {
         rating: 4,
         totalShares: 5,
         totalReceives: 3,
-        isVerified: false,
+        isVerified: isVerified,
+        isAdmin: isAdmin,
       );
 
       _currentUser = user;
+      print('DEBUG - User set: ${user.email}, isAdmin: ${user.isAdmin}');
       return user;
     } catch (e) {
       print('Error during sign in: $e');

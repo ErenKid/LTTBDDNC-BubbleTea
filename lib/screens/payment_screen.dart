@@ -7,7 +7,7 @@ import 'package:lttbddnc/screens/home_screen.dart';
 class PaymentScreen extends StatefulWidget {
   final List<FoodItemModel> selectedItems;
   final int totalPrice;
-  const PaymentScreen({Key? key, required this.selectedItems, required this.totalPrice}) : super(key: key);
+  const PaymentScreen({super.key, required this.selectedItems, required this.totalPrice});
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();

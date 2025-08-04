@@ -1,3 +1,5 @@
+import 'screens/admin_dashboard.dart';
+import 'screens/order_history_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lttbddnc/screens/notification_screen.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +18,7 @@ import 'screens/user_management.dart';
 import 'screens/statistics_screen.dart';
 import 'theme/app_theme.dart';
 import 'screens/admin_product_list.dart';
+import 'screens/profile_detail_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,6 +56,9 @@ class ShareEatApp extends StatelessWidget {
           '/product-crud': (context) => const ProductCrudScreen(),
           '/user-management': (context) => const UserManagementPage(),
           '/statistics': (context) => const StatisticsScreen(),
+          '/profile-detail': (context) => const ProfileDetailScreen(),
+          '/order-history': (context) => const OrderHistoryScreen(),
+          '/order-management': (context) => const AdminDashboardPage(),
         },
       ),
     );

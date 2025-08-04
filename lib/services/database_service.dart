@@ -1,3 +1,4 @@
+
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../models/user_model.dart';
@@ -5,6 +6,15 @@ import '../models/category_model.dart';
 import '../models/product_model.dart';
 
 class DatabaseService {
+  // Xóa user khỏi database
+  Future<int> deleteUser(String userId) async {
+    final dbClient = await db;
+    return await dbClient.delete(
+      'users',
+      where: 'id = ?',
+      whereArgs: [userId],
+    );
+  }
   static final DatabaseService _instance = DatabaseService._internal();
   factory DatabaseService() => _instance;
   DatabaseService._internal();
@@ -16,7 +26,16 @@ class DatabaseService {
     _db = await _initDb();
     return _db!;
   }
-
+ // Cập nhật thông tin user
+  Future<int> updateUser(UserModel user) async {
+    final dbClient = await db;
+    return await dbClient.update(
+      'users',
+      user.toMap(),
+      where: 'id = ?',
+      whereArgs: [user.id],
+    );
+  }
   Future<Database> _initDb() async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'app.db');

@@ -169,14 +169,18 @@ class ProfileScreen extends StatelessWidget {
                     'Cài đặt và chỉnh sửa thông tin',
                     Icons.person_outline,
                     Colors.blue,
-                    () {},
+                    () {
+                      final user = context.read<MockAuthService>().currentUser;
+                      print('DEBUG - Tap Thông tin cá nhân, user: $user');
+                      Navigator.pushNamed(context, '/profile-detail');
+                    },
                   ),
                   _buildMenuCard(
                     'Lịch sử đặt hàng',
                     'Xem các đơn hàng đã đặt',
                     Icons.history,
                     Colors.green,
-                    () {},
+                    () => Navigator.pushNamed(context, '/order-history'),
                   ),
                   _buildMenuCard(
                     'Hồ sơ kinh doanh',

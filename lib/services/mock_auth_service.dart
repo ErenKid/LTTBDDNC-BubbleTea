@@ -1,11 +1,16 @@
 import 'package:flutter/foundation.dart';
 import '../models/user_model.dart';
+import 'database_service.dart';
 
 class MockAuthService extends ChangeNotifier {
   UserModel? _currentUser;
   bool _isLoading = false;
 
   UserModel? get currentUser => _currentUser;
+  set currentUser(UserModel? user) {
+    _currentUser = user;
+    notifyListeners();
+  }
   bool get isLoading => _isLoading;
   bool get isAuthenticated => _currentUser != null;
 
@@ -73,47 +78,16 @@ class MockAuthService extends ChangeNotifier {
       _isLoading = true;
       notifyListeners();
 
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 1));
-      
-      // Check for admin account
-      bool isAdmin = false;
-      String userId = 'demo-user-id';
-      String userName = email.split('@')[0];
-      bool isVerified = false;
-      
-      if (email == 'admin@gmail.com' && password == 'admin123') {
-        isAdmin = true;
-        userId = 'admin-user-id';
-        userName = 'Administrator';
-        isVerified = true;
-        print('DEBUG - Admin login successful');
+      // Lấy user từ database để có đủ thông tin
+      final user = await DatabaseService().loginUser(email, password);
+      if (user != null) {
+        _currentUser = user;
+        print('DEBUG - User set: ${user.email}, isAdmin: ${user.isAdmin}');
+        return user;
       } else {
-        print('DEBUG - Regular user login: $email');
+        print('DEBUG - Login failed: user not found');
+        return null;
       }
-      
-      // Mock user for demo
-      final user = UserModel(
-        id: userId,
-        email: email,
-        name: userName,
-        createdAt: DateTime.now().subtract(const Duration(days: 30)),
-        password: password,
-        photoUrl: null,
-        phoneNumber: null,
-        address: null,
-        latitude: null,
-        longitude: null,
-        rating: 4,
-        totalShares: 5,
-        totalReceives: 3,
-        isVerified: isVerified,
-        isAdmin: isAdmin,
-      );
-
-      _currentUser = user;
-      print('DEBUG - User set: ${user.email}, isAdmin: ${user.isAdmin}');
-      return user;
     } catch (e) {
       print('Error during sign in: $e');
       rethrow;

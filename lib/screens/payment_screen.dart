@@ -1,3 +1,8 @@
+import 'package:provider/provider.dart';
+import '../models/order_model.dart';
+import '../services/order_service.dart';
+import '../services/mock_auth_service.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import '../models/food_item_model.dart';
 import '../theme/app_theme.dart';
@@ -141,10 +146,20 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       margin: const EdgeInsets.symmetric(vertical: 6),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       child: ListTile(
-                        leading: item.imageUrl != null
+                        leading: (item.imageUrl != null && item.imageUrl!.startsWith('http'))
                             ? ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
                                 child: Image.network(item.imageUrl!, width: 48, height: 48, fit: BoxFit.cover),
+                              )
+                          : (item.imageUrl != null && item.imageUrl!.isNotEmpty && (item.imageUrl!.startsWith('/data') || item.imageUrl!.startsWith('/storage')))
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.file(File(item.imageUrl!), width: 48, height: 48, fit: BoxFit.cover),
+                              )
+                          : (item.imageUrl != null && item.imageUrl!.isNotEmpty)
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.asset(item.imageUrl!, width: 48, height: 48, fit: BoxFit.cover),
                               )
                             : const Icon(Icons.fastfood, size: 32, color: AppTheme.primaryOrange),
                         title: Text(item.title, style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textDark)),
@@ -332,10 +347,35 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      // TODO: Xử lý đặt hàng
+                    onPressed: () async {
+                      final user = context.read<MockAuthService>().currentUser;
+                      print('DEBUG: currentUser = $user');
+                      if (user == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Bạn cần đăng nhập để đặt hàng!')));
+                        return;
+                      }
+                      final name = _nameController.text.trim();
+                      final phone = _phoneController.text.trim();
+                      final address = _addressController.text.trim();
+                      if (name.isEmpty || phone.isEmpty || address.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Vui lòng nhập đầy đủ thông tin giao hàng!')));
+                        return;
+                      }
+                      final order = OrderModel(
+                        id: DateTime.now().millisecondsSinceEpoch.toString(),
+                        userId: user.id,
+                        items: widget.selectedItems,
+                        totalPrice: finalTotal,
+                        createdAt: DateTime.now(),
+                        address: address,
+                        name: name,
+                        phone: phone,
+                        paymentMethod: paymentMethods[_selectedPayment],
+                      );
+                      print('DEBUG: order = ${order.toMap()}');
+                      await OrderService.saveOrder(order);
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Đặt hàng thành công!')));
-                      Navigator.pop(context);
+                      Navigator.pushReplacementNamed(context, '/order-history');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.primaryOrange,

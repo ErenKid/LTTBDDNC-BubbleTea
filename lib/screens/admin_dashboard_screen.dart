@@ -127,7 +127,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               crossAxisCount: 2,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
-              childAspectRatio: 1.2, // Tăng tỷ lệ để có thêm chiều cao
+              childAspectRatio: 1.2,
               children: [
                 _buildManagementCard(
                   title: 'Quản lý người dùng',
@@ -136,6 +136,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   color: Colors.blue,
                   onTap: () {
                     Navigator.of(context).pushNamed('/user-management');
+                  },
+                ),
+                _buildManagementCard(
+                  title: 'Quản lý đơn hàng',
+                  description: 'Xem và xử lý tất cả đơn hàng của khách',
+                  icon: Icons.receipt_long,
+                  color: Colors.teal,
+                  onTap: () {
+                    Navigator.of(context).pushNamed('/order-management');
                   },
                 ),
                 _buildManagementCard(

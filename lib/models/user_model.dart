@@ -66,7 +66,7 @@ class UserModel {
       'rating': rating,
       'totalShares': totalShares,
       'totalReceives': totalReceives,
-      'createdAt': createdAt,
+      'createdAt': createdAt.toIso8601String(),
       'isVerified': isVerified,
       'password': password,
       'isAdmin': isAdmin,

@@ -8,6 +8,7 @@ import '../providers/product_provider.dart';
 import '../services/database_service.dart';
 import '../services/mock_auth_service.dart';
 import '../theme/app_theme.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProductCrudScreen extends StatefulWidget {
   const ProductCrudScreen({super.key});
@@ -819,15 +820,33 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   padding: const EdgeInsets.all(16),
                   child: TextFormField(
                     controller: _titleController,
-                    style: const TextStyle(
+                    style: TextStyle(
+                      fontFamily: GoogleFonts.roboto().fontFamily,
                       color: Colors.black,
-                      fontFamily: 'Montserrat',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
                     ),
-                    decoration: const InputDecoration(
-                      labelText: 'Tên sản phẩm *',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.shopping_bag),
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      hintText: 'Nhập tên sản phẩm',
+                      hintStyle: TextStyle(
+                        fontFamily: GoogleFonts.roboto().fontFamily,
+                        color: Colors.grey.shade500,
+                        fontSize: 15,
+                      ),
+                      prefixIcon: Icon(Icons.shopping_bag, color: Colors.grey.shade600),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: AppTheme.primaryOrange, width: 2),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
+                    textInputAction: TextInputAction.done,
+                    enableSuggestions: true,
+                    autocorrect: true,
                     validator: (value) {
                       if (value?.trim().isEmpty ?? true) {
                         return 'Vui lòng nhập tên sản phẩm';
@@ -845,16 +864,24 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   padding: const EdgeInsets.all(16),
                   child: TextFormField(
                     controller: _descriptionController,
-                    style: const TextStyle(
+                    style: TextStyle(
+                      fontFamily: GoogleFonts.roboto().fontFamily,
                       color: Colors.black,
-                      fontFamily: 'Montserrat',
-                    ),
-                    decoration: const InputDecoration(
-                      labelText: 'Mô tả',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.description),
+                      fontSize: 15,
                     ),
                     maxLines: 3,
+                    decoration: InputDecoration(
+                      labelText: 'Mô tả',
+                      labelStyle: TextStyle(
+                        fontFamily: GoogleFonts.roboto().fontFamily,
+                        color: Colors.grey.shade600,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      prefixIcon: Icon(Icons.description, color: Colors.grey.shade600),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
                   ),
                 ),
               ),

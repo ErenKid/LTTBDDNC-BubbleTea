@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/category_model.dart';
 import '../providers/category_provider.dart';
 import '../theme/app_theme.dart';
@@ -50,15 +51,33 @@ class _CategoryCrudScreenState extends State<CategoryCrudScreen> {
               children: [
                 TextFormField(
                   controller: nameController,
-                  style: const TextStyle(
+                  style: TextStyle(
+                    fontFamily: GoogleFonts.roboto().fontFamily,
                     color: Colors.black,
-                    fontFamily: 'Montserrat',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
                   ),
-                  decoration: const InputDecoration(
-                    labelText: 'Tên danh mục *',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.category),
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    hintText: 'Nhập tên danh mục',
+                    hintStyle: TextStyle(
+                      fontFamily: GoogleFonts.roboto().fontFamily,
+                      color: Colors.grey.shade500,
+                      fontSize: 15,
+                    ),
+                    prefixIcon: Icon(Icons.category, color: Colors.grey.shade600),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: AppTheme.primaryOrange, width: 2),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   ),
+                  textInputAction: TextInputAction.done,
+                  enableSuggestions: true,
+                  autocorrect: true,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(

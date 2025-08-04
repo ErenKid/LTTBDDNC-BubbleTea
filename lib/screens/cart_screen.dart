@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:lttbddnc/screens/home_screen.dart';
 import '../theme/app_theme.dart';
@@ -21,13 +22,20 @@ class _CartScreenState extends State<CartScreen> {
   void initState() {
     super.initState();
     checked = List.generate(CartModel.cartItems.value.length, (index) => false);
+    CartModel.loadCartForCurrentUser();
     CartModel.cartItems.addListener(_onCartChanged);
+    CartModel.cartItems.addListener(_saveCartOnChange);
   }
 
   @override
   void dispose() {
     CartModel.cartItems.removeListener(_onCartChanged);
+    CartModel.cartItems.removeListener(_saveCartOnChange);
     super.dispose();
+  }
+
+  void _saveCartOnChange() {
+    CartModel.saveCartForCurrentUser();
   }
 
   void _onCartChanged() {
@@ -180,10 +188,20 @@ class _CartScreenState extends State<CartScreen> {
                                           });
                                         },
                                       ),
-                                      item.imageUrl != null
+                                      (item.imageUrl != null && item.imageUrl!.startsWith('http'))
                                           ? ClipRRect(
                                               borderRadius: BorderRadius.circular(12),
                                               child: Image.network(item.imageUrl!, width: 56, height: 56, fit: BoxFit.cover),
+                                            )
+                                        : (item.imageUrl != null && item.imageUrl!.isNotEmpty && (item.imageUrl!.startsWith('/data') || item.imageUrl!.startsWith('/storage')))
+                                          ? ClipRRect(
+                                              borderRadius: BorderRadius.circular(12),
+                                              child: Image.file(File(item.imageUrl!), width: 56, height: 56, fit: BoxFit.cover),
+                                            )
+                                        : (item.imageUrl != null && item.imageUrl!.isNotEmpty)
+                                          ? ClipRRect(
+                                              borderRadius: BorderRadius.circular(12),
+                                              child: Image.asset(item.imageUrl!, width: 56, height: 56, fit: BoxFit.cover),
                                             )
                                           : const Icon(Icons.fastfood, size: 40, color: AppTheme.primaryOrange),
                                       const SizedBox(width: 8),
@@ -206,12 +224,17 @@ class _CartScreenState extends State<CartScreen> {
                                                   icon: const Icon(Icons.remove_circle_outline, color: AppTheme.primaryOrange),
                                                   onPressed: () {
                                                     final items = List<FoodItemModel>.from(cartItems);
+                                                    final checkedCopy = List<bool>.from(checked);
                                                     if (item.quantity > 1) {
                                                       items[index] = item.copyWith(quantity: item.quantity - 1);
                                                     } else {
                                                       items.removeAt(index);
+                                                      checkedCopy.removeAt(index);
                                                     }
-                                                    CartModel.cartItems.value = items;
+                                                    setState(() {
+                                                      CartModel.cartItems.value = items;
+                                                      checked = checkedCopy;
+                                                    });
                                                   },
                                                   constraints: const BoxConstraints(),
                                                   padding: EdgeInsets.zero,
@@ -221,8 +244,11 @@ class _CartScreenState extends State<CartScreen> {
                                                   icon: const Icon(Icons.add_circle_outline, color: AppTheme.primaryOrange),
                                                   onPressed: () {
                                                     final items = List<FoodItemModel>.from(cartItems);
-                                                    items[index] = item.copyWith(quantity: item.quantity + 1);
-                                                    CartModel.cartItems.value = items;
+                                                    setState(() {
+                                                      items[index] = item.copyWith(quantity: item.quantity + 1);
+                                                      CartModel.cartItems.value = items;
+                                                      // checked giữ nguyên
+                                                    });
                                                   },
                                                   constraints: const BoxConstraints(),
                                                   padding: EdgeInsets.zero,

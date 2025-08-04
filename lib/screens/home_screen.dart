@@ -11,6 +11,7 @@ import '../models/category_model.dart';
 import '../providers/category_provider.dart';
 import '../providers/product_provider.dart';
 import '../services/mock_auth_service.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomeTabContent extends StatefulWidget {
   const HomeTabContent({super.key});
@@ -871,4 +872,4 @@ class _HomeScreenState extends State<HomeScreen> {
       showUnselectedLabels: false,
     );
   }
-} 
+}

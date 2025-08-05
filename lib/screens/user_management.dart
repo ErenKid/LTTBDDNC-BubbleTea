@@ -491,9 +491,9 @@ class _UserManagementPageState extends State<UserManagementPage> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Ngày tạo: ' + (user.id.length > 10
+                    'Ngày tạo: ${user.id.length > 10
                         ? DateTime.fromMillisecondsSinceEpoch(int.tryParse(user.id) ?? 0).toString().substring(0, 19)
-                        : user.id),
+                        : user.id}',
                     style: const TextStyle(
                       fontFamily: 'Montserrat',
                       fontSize: 12,
@@ -608,10 +608,10 @@ class _UserManagementPageState extends State<UserManagementPage> {
           ElevatedButton.icon(
             onPressed: null,
             style: ButtonStyle(
-              backgroundColor: MaterialStatePropertyAll(Color(0xFFAED581)),
-              foregroundColor: MaterialStatePropertyAll(Colors.white),
-              padding: MaterialStatePropertyAll(EdgeInsets.symmetric(horizontal: 24, vertical: 12)),
-              shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+              backgroundColor: WidgetStatePropertyAll(Color(0xFFAED581)),
+              foregroundColor: WidgetStatePropertyAll(Colors.white),
+              padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 24, vertical: 12)),
+              shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(12)),
               )),
             ),

@@ -530,7 +530,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   CategoryModel? _selectedCategory;
   File? _selectedImage; // Biến để lưu ảnh chính đã chọn
-  List<File> _selectedImages = []; // Danh sách nhiều ảnh đã chọn
+  final List<File> _selectedImages = []; // Danh sách nhiều ảnh đã chọn
   String? _existingImageUrl; // Ảnh cũ từ URL (nếu có)
   List<String> _existingImageUrls = []; // Danh sách ảnh cũ từ URL
   final ImagePicker _imagePicker = ImagePicker(); // ImagePicker
@@ -1116,7 +1116,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                     ],
                                   ),
                                 );
-                              }).toList(),
+                              }),
                               
                               // Hiển thị ảnh mới
                               ..._selectedImages.asMap().entries.map((entry) {
@@ -1162,7 +1162,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                     ],
                                   ),
                                 );
-                              }).toList(),
+                              }),
                             ],
                           ),
                         ),

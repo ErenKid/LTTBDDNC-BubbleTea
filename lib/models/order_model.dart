@@ -10,6 +10,7 @@ class OrderModel {
   final String name;
   final String phone;
   final String paymentMethod;
+  final String status;
 
   OrderModel({
     required this.id,
@@ -21,6 +22,7 @@ class OrderModel {
     required this.name,
     required this.phone,
     required this.paymentMethod,
+    required this.status,
   });
 
   Map<String, dynamic> toMap() => {
@@ -33,6 +35,7 @@ class OrderModel {
     'name': name,
     'phone': phone,
     'paymentMethod': paymentMethod,
+    'status': status,
   };
 
   factory OrderModel.fromMap(Map<String, dynamic> map) => OrderModel(
@@ -45,5 +48,6 @@ class OrderModel {
     name: map['name'],
     phone: map['phone'],
     paymentMethod: map['paymentMethod'],
+    status: map['status'] ?? 'pending',
   );
 }

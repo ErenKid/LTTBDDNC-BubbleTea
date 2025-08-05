@@ -40,7 +40,7 @@ class ProductProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       print('[ProductProvider] Error adding product: $e');
-      throw e;
+      rethrow;
     }
   }
 
@@ -58,7 +58,7 @@ class ProductProvider extends ChangeNotifier {
       }
     } catch (e) {
       print('[ProductProvider] Error updating product: $e');
-      throw e;
+      rethrow;
     }
   }
 
@@ -73,7 +73,7 @@ class ProductProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       print('[ProductProvider] Error deleting product: $e');
-      throw e;
+      rethrow;
     }
   }
 

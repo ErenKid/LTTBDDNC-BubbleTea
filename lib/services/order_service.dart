@@ -1,31 +1,14 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/order_model.dart';
-// import '../services/mock_auth_service.dart';
+import 'database_service.dart';
 
 class OrderService {
   static Future<void> saveOrder(OrderModel order) async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = order.userId;
-    final key = 'orders_$userId';
-    final ordersJson = prefs.getString(key);
-    List list = ordersJson != null ? jsonDecode(ordersJson) : [];
-    print('DEBUG: Saving order with fields:');
-    print('  id: ${order.id}');
-    print('  userId: ${order.userId}');
-    print('  totalPrice: ${order.totalPrice}');
-    print('  createdAt: ${order.createdAt}');
-    print('  address: ${order.address}');
-    print('  name: ${order.name}');
-    print('  phone: ${order.phone}');
-    print('  paymentMethod: ${order.paymentMethod}');
-    print('  items:');
-    for (var item in order.items) {
-      print('    - id: ${item.id}, title: ${item.title}, quantity: ${item.quantity}, price: ${item.price}');
-    }
-    list.add(order.toMap());
-    await prefs.setString(key, jsonEncode(list));
-    print('DEBUG: Saved order for $userId, key=$key, total orders=${list.length}');
+    // Lưu đơn hàng vào database SQLite
+    print('DEBUG: Saving order to SQLite database...');
+    await DatabaseService().addOrder(order);
+    print('DEBUG: Saved order to database for userId=${order.userId}');
   }
 
   static Future<List<OrderModel>> getOrdersForUserId(String userId) async {

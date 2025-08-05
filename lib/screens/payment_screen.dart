@@ -371,6 +371,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         name: name,
                         phone: phone,
                         paymentMethod: paymentMethods[_selectedPayment],
+                        status: 'pending',
                       );
                       print('DEBUG: order = ${order.toMap()}');
                       await OrderService.saveOrder(order);

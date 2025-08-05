@@ -4,9 +4,54 @@ import 'package:path/path.dart';
 import '../models/user_model.dart';
 import '../models/category_model.dart';
 import '../models/product_model.dart';
-
+import '../models/order_model.dart';
+import 'dart:convert';
 class DatabaseService {
+  // Xóa đơn hàng khỏi database
+  Future<int> deleteOrder(String orderId) async {
+    final dbClient = await db;
+    return await dbClient.delete(
+      'orders',
+      where: 'id = ?',
+      whereArgs: [orderId],
+    );
+  }
+  // Cập nhật đơn hàng (ví dụ: đổi trạng thái)
+  Future<int> updateOrder(OrderModel order) async {
+    final dbClient = await db;
+    return await dbClient.update(
+      'orders',
+      {
+        ...order.toMap(),
+        'items': jsonEncode(order.items.map((e) => e.toMap()).toList()),
+        'createdAt': order.createdAt.toIso8601String(),
+      },
+      where: 'id = ?',
+      whereArgs: [order.id],
+    );
+  }
+  // Thêm đơn hàng mới vào database
+  Future<int> addOrder(OrderModel order) async {
+    final dbClient = await db;
+    return await dbClient.insert('orders', {
+      ...order.toMap(),
+      'items': jsonEncode(order.items.map((e) => e.toMap()).toList()), // Lưu items dạng JSON string
+      'createdAt': order.createdAt.toIso8601String(),
+    });
+  }
   // Xóa user khỏi database
+  Future<List<OrderModel>> getAllOrders() async {
+    final dbClient = await db;
+    final res = await dbClient.query('orders', orderBy: 'createdAt DESC');
+    return res.map((map) {
+      final itemsRaw = map['items'];
+      final itemsList = (itemsRaw is String) ? jsonDecode(itemsRaw) : itemsRaw;
+      return OrderModel.fromMap({
+        ...map,
+        'items': itemsList,
+      });
+    }).toList();
+  }
   Future<int> deleteUser(String userId) async {
     final dbClient = await db;
     return await dbClient.delete(
@@ -41,8 +86,24 @@ class DatabaseService {
     final path = join(dbPath, 'app.db');
     return await openDatabase(
       path,
-      version: 5, // Tăng version để thêm trường imageUrls
+      version: 6, // Tăng version để thêm trường imageUrls
       onCreate: (db, version) async {
+
+        await db.execute('''
+  CREATE TABLE orders(
+    id TEXT PRIMARY KEY,
+    userId TEXT NOT NULL,
+    items TEXT NOT NULL, -- JSON list
+    totalPrice INTEGER NOT NULL,
+    createdAt TEXT NOT NULL,
+    address TEXT NOT NULL,
+    name TEXT NOT NULL,
+    phone TEXT NOT NULL,
+    paymentMethod TEXT NOT NULL,
+    status TEXT NOT NULL,
+    FOREIGN KEY (userId) REFERENCES users(id)
+  )
+''');
         // Tạo bảng users
         await db.execute('''
           CREATE TABLE users(
@@ -175,9 +236,27 @@ class DatabaseService {
           // Thêm trường imageUrls vào bảng products
           await db.execute('ALTER TABLE products ADD COLUMN imageUrls TEXT DEFAULT ""');
         }
+        if (oldVersion < 6) {
+  await db.execute('''
+    CREATE TABLE orders(
+      id TEXT PRIMARY KEY,
+      userId TEXT NOT NULL,
+      items TEXT NOT NULL,
+      totalPrice INTEGER NOT NULL,
+      createdAt TEXT NOT NULL,
+      address TEXT NOT NULL,
+      name TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      paymentMethod TEXT NOT NULL,
+      status TEXT NOT NULL,
+      FOREIGN KEY (userId) REFERENCES users(id)
+    )
+  ''');
+}
       },
     );
   }
+
 
   // Method để reset database (dùng cho debugging)
   Future<void> resetDatabase() async {

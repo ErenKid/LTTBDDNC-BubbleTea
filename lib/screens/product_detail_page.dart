@@ -183,7 +183,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         },
         loadingBuilder: (context, child, loadingProgress) {
           if (loadingProgress == null) return child;
-          return Container(
+          return SizedBox(
             height: 280,
             child: Center(
               child: CircularProgressIndicator(

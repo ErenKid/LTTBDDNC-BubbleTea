@@ -122,7 +122,7 @@ final handler = Router()
 void main() async {
   final server = await serve(
 
-    logRequests().addHandler(handler),
+    logRequests().addHandler(handler.call),
 
     InternetAddress.anyIPv4,
     8080,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/order_service.dart';
+import '../services/database_service.dart';
 import '../models/order_model.dart';
 import '../theme/app_theme.dart';
 import 'package:intl/intl.dart';
@@ -14,17 +14,37 @@ class OrderHistoryScreen extends StatefulWidget {
 }
 
 class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
+  static const Map<String, Color> statusColors = {
+    'Đã xác nhận': Color(0xFF1976D2),
+    'Vận chuyển': Color(0xFFFFA000),
+    'Hoàn thành': Color(0xFF43A047),
+    'Hủy': Color(0xFFD32F2F),
+    'pending': Colors.grey,
+  };
+
+  String getStatusLabel(String status) {
+    if (status == 'pending') return 'Đã xác nhận';
+    return status;
+  }
   late Future<List<OrderModel>> _ordersFuture;
 
   @override
   void initState() {
     super.initState();
     // Lấy user sau khi widget đã build xong để tránh lỗi context
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final user = context.read<MockAuthService>().currentUser;
-      setState(() {
-        _ordersFuture = user != null ? OrderService.getOrdersForUserId(user.id) : Future.value([]);
-      });
+      if (user != null) {
+        final allOrders = await DatabaseService().getAllOrders();
+        final userOrders = allOrders.where((o) => o.userId == user.id).toList();
+        setState(() {
+          _ordersFuture = Future.value(userOrders);
+        });
+      } else {
+        setState(() {
+          _ordersFuture = Future.value([]);
+        });
+      }
     });
   }
 
@@ -99,6 +119,31 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                                 Text(DateFormat('dd/MM/yyyy').format(order.createdAt),
                                   style: const TextStyle(fontSize: 13, color: AppTheme.primaryOrange, fontWeight: FontWeight.w500)),
                               ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(Icons.info_outline, color: statusColors[order.status] ?? Colors.grey, size: 20),
+                          const SizedBox(width: 6),
+                          Text('Trạng thái:', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textDark, fontSize: 14)),
+                          const SizedBox(width: 4),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: (statusColors[order.status] ?? Colors.grey).withOpacity(0.12),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              getStatusLabel(order.status),
+                              style: TextStyle(
+                                color: statusColors[order.status] ?? Colors.grey,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Montserrat',
+                                fontSize: 14,
+                              ),
                             ),
                           ),
                         ],

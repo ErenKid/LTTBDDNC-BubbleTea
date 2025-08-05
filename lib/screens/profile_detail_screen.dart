@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import '../services/mock_auth_service.dart';
 import '../theme/app_theme.dart';
 import '../services/database_service.dart';
-import '../models/user_model.dart';
 
 class ProfileDetailScreen extends StatefulWidget {
   const ProfileDetailScreen({super.key});

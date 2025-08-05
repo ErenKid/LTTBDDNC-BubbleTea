@@ -40,7 +40,7 @@ class CategoryProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       print('[CategoryProvider] Error adding category: $e');
-      throw e;
+      rethrow;
     }
   }
 
@@ -58,7 +58,7 @@ class CategoryProvider extends ChangeNotifier {
       }
     } catch (e) {
       print('[CategoryProvider] Error updating category: $e');
-      throw e;
+      rethrow;
     }
   }
 
@@ -73,7 +73,7 @@ class CategoryProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       print('[CategoryProvider] Error deleting category: $e');
-      throw e;
+      rethrow;
     }
   }
 
